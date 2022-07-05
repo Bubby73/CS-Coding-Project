@@ -36,7 +36,7 @@ Sun = newSun(Sun)
 
 
 def update(dt):
-    #pyglet.clock.tick()
+    pyglet.clock.tick()
     window.clear()
     global Sun
     Sun.update()
@@ -45,7 +45,7 @@ def update(dt):
        
 
 
-pyglet.clock.schedule_interval(update, 1/60)
+pyglet.clock.schedule_interval(update, 1/120)
 
 
 
@@ -53,4 +53,6 @@ pyglet.clock.schedule_interval(update, 1/60)
 
 
 pyglet.app.run()
+
+
 
