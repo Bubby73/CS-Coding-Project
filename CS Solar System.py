@@ -26,11 +26,12 @@ class planet():
         self.planet.draw()
 
 bodies = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
-Sun = planet(bodies[0], random.randint(0,1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(1,10))
+Sun = ()
 
 def newSun(Sun):
-    Sun = planet(bodies[0], random.randint(0, 1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(5,15))
+    Sun = planet(bodies[0], random.randint(0, 1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(10,20))
     return Sun
+Sun = newSun(Sun)
 
 
 
@@ -45,6 +46,10 @@ def update(dt):
 
 
 pyglet.clock.schedule_interval(update, 1/60)
+
+
+
+
 
 
 pyglet.app.run()
