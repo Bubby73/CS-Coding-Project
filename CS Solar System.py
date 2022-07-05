@@ -42,6 +42,7 @@ def on_draw():
 
     if Sun.x > 1200 or Sun.x < 0 or Sun.y > 600 or Sun.y < 0:
        Sun = newSun(Sun)
+#update
        
 
     
