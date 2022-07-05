@@ -3,7 +3,7 @@ import math
 import random
 window = pyglet.window.Window(1200, 600)
 
-class body():
+class planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
         self.mass = mass
@@ -15,35 +15,33 @@ class body():
         self.vx = math.sin(math.radians(self.direction)) * self.velocity
         self.vy = math.cos(math.radians(self.direction)) * self.velocity
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        self.body = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.color)
-        self.body.draw()
+        self.planet = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.color)
+        self.planet.draw()
 
     def update(self):
         self.x += self.vx
         self.y += self.vy
-        self.body.x = self.x
-        self.body.y = self.y
-        self.body.draw()
+        self.planet.x = self.x
+        self.planet.y = self.y
+        self.planet.draw()
 
 bodies = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
-Sun = body(bodies[0], random.randint(0,1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(1,10))
+Sun = planet(bodies[0], random.randint(0,1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(1,10))
 
 def newSun(Sun):
-    Sun = body(bodies[0], random.randint(0, 1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(5,15))
+    Sun = planet(bodies[0], random.randint(0, 1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(5,15))
     return Sun
-@window.event
-def on_draw():
-    global Sun
+
+
+
+def update(dt):
+    pyglet.clock.tick()
     window.clear()
-    #draw Sun
-    Sun.body.draw()
-    #update Sun
+    global Sun
     Sun.update()
+    if Sun.x > 1200 or Sun.x < 0 or Sun.y > 600 or Sun.y < 0: 
+        Sun = newSun(Sun)
+       
 
-    if Sun.x > 1200 or Sun.x < 0 or Sun.y > 600 or Sun.y < 0:
-       Sun = newSun(Sun)
 
-
-pyglet.app.run()
-
-#bruh
+pyglet.clock.schedule_interval(update, 1/120)
