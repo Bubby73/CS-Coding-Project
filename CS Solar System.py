@@ -45,6 +45,7 @@ def update(dt):
 
 
 pyglet.clock.schedule_interval(update, 1/120)
+<<<<<<< HEAD
 
 
 
@@ -53,3 +54,5 @@ pyglet.clock.schedule_interval(update, 1/120)
 
 pyglet.app.run()
 
+=======
+>>>>>>> 06923a81d30100a0211d1eeb5f74b4a83d211b31
