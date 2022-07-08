@@ -1,10 +1,11 @@
 import pyglet
 import math
 import random
-
+numObjects = 3
 window = pyglet.window.Window(1200, 600)
 
 key = pyglet.window.key
+
 
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
@@ -21,6 +22,7 @@ class Planet():
 
         self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.color)
 
+
     def draw(self):
         self.circle.draw()
 
@@ -29,15 +31,23 @@ class Planet():
         self.y += self.vy
         self.circle.x = self.x
         self.circle.y = self.y
+        
+            
 
+
+
+planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+#new planet
 def new_planet():
-    sun = Planet(planets[0], random.randint(0, 1200), random.randint(0, 600), random.randint(100, 1200), random.randint(0,360), random.randint(5,15))
-    return sun
+        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 1000), random.randint(0, 360), random.randint(1, 10))
+        return planet
 
-planets = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+objects = []
 
-sun = new_planet()
-mercury = new_planet()
+for i in range(0, numObjects):
+    objects.append(new_planet())
+
+
 running = True
 while running == True:
     pyglet.clock.tick()
@@ -46,15 +56,14 @@ while running == True:
     window.flip()
     
     window.clear()
-    sun.draw()
-    sun.update()
-    mercury.draw()
-    mercury.update()
-
-    if sun.x > 1200 or sun.x < 0 or sun.y > 600 or sun.y < 0:
-        sun = new_planet()
-    if mercury.x > 1200 or mercury.x < 0 or mercury.y > 600 or mercury.y < 0:
-        mercury = new_planet()
+    for planet in objects:
+        if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
+            objects.remove(planet)
+            planet = new_planet()
+            objects.append(planet)
+            
+        planet.update()
+        planet.draw()
 
     #detect if escape key is pressed
     @window.event
