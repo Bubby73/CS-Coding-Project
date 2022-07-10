@@ -74,7 +74,7 @@ class Planet():
 planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
 #new planet
 def new_planet():
-        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 1000), random.randint(0, 360), random.randint(1, 10))
+        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(10, 300), random.randint(0, 360), random.randint(1, 10))
         return planet
 
 objects = []
@@ -83,7 +83,7 @@ for i in range(0, numObjects):
     objects.append(new_planet())
 
 
-running = False
+running = True
 while running:
     window.switch_to()
     window.dispatch_events()
@@ -109,7 +109,7 @@ while running:
         if symbol == pyglet.window.key.ESCAPE:
              running = False
 
-#generateButton = Button(root, text="Generate", command=new_planet)
-#generateButton.grid(row=6, column=0)
+    #generateButton = Button(root, text="Generate")
+    #generateButton.grid(row=6, column=0)
 
 mainloop()
