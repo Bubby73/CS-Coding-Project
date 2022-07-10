@@ -1,7 +1,7 @@
 import pyglet
 import math
 import random
-numObjects = 3
+numObjects = 20
 window = pyglet.window.Window(1200, 600)
 
 key = pyglet.window.key
@@ -33,9 +33,6 @@ class Planet():
         self.circle.y = self.y
         
             
-
-
-
 planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
 #new planet
 def new_planet():
@@ -50,20 +47,22 @@ for i in range(0, numObjects):
 
 running = True
 while running == True:
-    pyglet.clock.tick()
     window.switch_to()
     window.dispatch_events()
     window.flip()
-    
+
     window.clear()
+    temp_object_list = []
     for planet in objects:
         if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
-            objects.remove(planet)
-            planet = new_planet()
-            objects.append(planet)
-            
+            temp_object_list.append(new_planet())
+        else:
+            temp_object_list.append(planet)
+
         planet.update()
         planet.draw()
+
+    objects = temp_object_list
 
     #detect if escape key is pressed
     @window.event
