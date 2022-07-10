@@ -1,3 +1,4 @@
+from tkinter import *
 import pyglet
 import math
 import random
@@ -6,6 +7,43 @@ window = pyglet.window.Window(1200, 600)
 
 key = pyglet.window.key
 
+root = Tk()
+
+nameLabel = Label(root, text="Object Name:")
+nameLabel.grid(row=0, column=0)
+
+nameEntry = Entry(root, width = 8, relief=FLAT)
+nameEntry.grid(row=0, column=1)
+
+massLabel = Label(root, text="Mass:")
+massLabel.grid(row=1, column=0)
+
+massEntry = Entry(root, width = 8, relief=FLAT)
+massEntry.grid(row=1, column=1)
+
+directionLabel = Label(root, text="Direction:")
+directionLabel.grid(row=2, column=0)
+
+directionEntry = Entry(root, width = 8, relief=FLAT)
+directionEntry.grid(row=2, column=1)
+
+velocityLabel = Label(root, text="Velocity:")
+velocityLabel.grid(row=3, column=0)
+
+velocityEntry = Entry(root, width = 8, relief=FLAT)
+velocityEntry.grid(row=3, column=1)
+
+xcoordLabel = Label(root, text="X Coordinate:")
+xcoordLabel.grid(row=4, column=0)
+
+xcoordEntry = Entry(root, width = 8, relief=FLAT)
+xcoordEntry.grid(row=4, column=1)
+
+ycoordLabel = Label(root, text="Y Coordinate:")
+ycoordLabel.grid(row=5, column=0)
+
+ycoordEntry = Entry(root, width = 8, relief=FLAT)
+ycoordEntry.grid(row=5, column=1)
 
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
@@ -45,8 +83,8 @@ for i in range(0, numObjects):
     objects.append(new_planet())
 
 
-running = True
-while running == True:
+running = False
+while running:
     window.switch_to()
     window.dispatch_events()
     window.flip()
@@ -70,3 +108,8 @@ while running == True:
         global running    
         if symbol == pyglet.window.key.ESCAPE:
              running = False
+
+#generateButton = Button(root, text="Generate", command=new_planet)
+#generateButton.grid(row=6, column=0)
+
+mainloop()
