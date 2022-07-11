@@ -1,8 +1,9 @@
+#from msilib.schema import CheckBox
 from tkinter import *
+from turtle import onkeypress, window_width
 import pyglet
 import math
 import random
-numObjects = 20
 window = pyglet.window.Window(1200, 600)
 
 key = pyglet.window.key
@@ -45,8 +46,16 @@ ycoordLabel.grid(row=5, column=0)
 ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
 
-generateButton = Button(root, text="Generate")
-generateButton.grid(row=6, column=0)
+var = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize", variable=var)
+nameCheckbox.grid(row=6, column=1)
+
+currentPlanetLabel = Label(root, text="Current Planet:")
+currentPlanetLabel.grid(row=7, column=0)
+currentPlanets = ""
+currentPlanetslabel = Label(root, text = currentPlanets)
+currentPlanetslabel.grid(row=7, column=1)
+
 
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
@@ -73,17 +82,19 @@ class Planet():
         self.circle.x = self.x
         self.circle.y = self.y
         
-            
-planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+objects = []
+randomnames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]
 #new planet
 def new_planet():
-        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(10, 300), random.randint(0, 360), random.randint(1, 10))
-        return planet
+    if var.get() == 1:
+        planet = Planet(random.choice(randomnames), random.randint(200, 1000), random.randint(100, 500), random.randint(50, 500), random.randint(0, 360), random.randint(1, 25))
+    else:
+        planet = Planet(nameEntry.get(), float(xcoordEntry.get()), float(ycoordEntry.get()), float(massEntry.get()), float(directionEntry.get()), float(velocityEntry.get()))
+    objects.append(planet)
+    
 
-objects = []
-
-for i in range(0, numObjects):
-    objects.append(new_planet())
+generateButton = Button(root, text="Generate", command=new_planet)
+generateButton.grid(row=6, column=0)
 
 
 running = True
@@ -96,22 +107,24 @@ while running:
     temp_object_list = []
     for planet in objects:
         if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
-            temp_object_list.append(new_planet())
-    
-        else:
             temp_object_list.append(planet)
-            
-
-        planet.update()
-        planet.draw()
-        
 
 
-    objects = temp_object_list
+        else:
+            planet.update()
+            planet.draw()
+
+    #add planets to current planets label
+    currentPlanets = ""
+    for planet in objects:
+        currentPlanets += planet.name + "\n"
+    currentPlanetslabel.config(text = currentPlanets)
+                
+    for planet in temp_object_list:
+        objects.remove(planet)
 
     
 
-    
 
     #detect if escape key is pressed
     @window.event
