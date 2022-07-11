@@ -52,7 +52,7 @@ currentPlanetLabel = Label(root, text="Current Planet:")
 currentPlanetLabel.grid(row=7, column=0)
 currentPlanets = ""
 currentPlanetslabel = Label(root, text = currentPlanets)
-currentPlanetslabel.grid(row=7, column=1)
+currentPlanetslabel.grid(row=8, column=0)
 
 
 class Planet():
@@ -66,9 +66,9 @@ class Planet():
         self.velocity = velocity
         self.vx = math.sin(math.radians(self.direction)) * self.velocity
         self.vy = math.cos(math.radians(self.direction)) * self.velocity
-        self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
-        self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.color)
+        self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.colour)
 
 
     def draw(self):
@@ -94,8 +94,8 @@ def new_planet():
 generateButton = Button(root, text="Generate", command=new_planet)
 generateButton.grid(row=6, column=0)
 
-
 running = True
+paused = False
 while running:
     window.switch_to()
     window.dispatch_events()
@@ -129,7 +129,13 @@ while running:
     def on_key_press(symbol, modifiers):  
         global running    
         if symbol == pyglet.window.key.ESCAPE:
-             running = False
+            running = False
+
+        if symbol == pyglet.window.key.SPACE:
+            print("Paused")
+            #wait until space is pressed again
+            while symbol == pyglet.window.key.SPACE: 
+                pass                  
 
     
 
