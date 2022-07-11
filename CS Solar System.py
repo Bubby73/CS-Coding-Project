@@ -45,6 +45,9 @@ ycoordLabel.grid(row=5, column=0)
 ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
 
+generateButton = Button(root, text="Generate")
+generateButton.grid(row=6, column=0)
+
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
@@ -88,19 +91,27 @@ while running:
     window.switch_to()
     window.dispatch_events()
     window.flip()
-
+    root.update()
     window.clear()
     temp_object_list = []
     for planet in objects:
         if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
             temp_object_list.append(new_planet())
+    
         else:
             temp_object_list.append(planet)
+            
 
         planet.update()
         planet.draw()
+        
+
 
     objects = temp_object_list
+
+    
+
+    
 
     #detect if escape key is pressed
     @window.event
@@ -109,7 +120,6 @@ while running:
         if symbol == pyglet.window.key.ESCAPE:
              running = False
 
-    #generateButton = Button(root, text="Generate")
-    #generateButton.grid(row=6, column=0)
+    
 
-mainloop()
+    
