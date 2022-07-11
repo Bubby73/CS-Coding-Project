@@ -1,6 +1,4 @@
-#from msilib.schema import CheckBox
 from tkinter import *
-from turtle import onkeypress, window_width
 import pyglet
 import math
 import random
