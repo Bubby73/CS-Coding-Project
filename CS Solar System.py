@@ -89,6 +89,7 @@ class Planet():
     def draw(self):
         self.circle.draw()
 
+    #updates the position of the planet
     def update(self):
         self.x += self.vx
         self.y += self.vy
@@ -183,21 +184,18 @@ while running:
     else:
         window.switch_to()
         window.dispatch_events()
-        #window.flip()
         root.update()
         currentPlanets = ""
         for planet in objects:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
         
-        
+    #increase window size when more planets being displayed  
     screen_resolution = str(xwidth)+'x'+str(190 + 15*len(objects))
-        
     root.geometry(screen_resolution)
 
 
-    #detect if escape key is pressed
-  
+    #detect if a key is pressed
     @window.event()
     def on_key_press(symbol, modifiers):
         global running
@@ -211,6 +209,7 @@ while running:
         if symbol == key.P and paused == False:
             pause()
             window.flip()
+            #temporarily set symbol to not P to prevent infinite loop
             symbol = key.R
 
         if symbol == key.P and paused == True:
@@ -228,6 +227,6 @@ while running:
         
     
 
-    #print(paused)
+   
 
     
