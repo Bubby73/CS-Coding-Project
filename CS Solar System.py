@@ -2,8 +2,9 @@ from tkinter import *
 import pyglet
 import math
 import random
-window = pyglet.window.Window(1200, 600)
 
+#window setup
+window = pyglet.window.Window(1200, 600)
 key = pyglet.window.key
 objects = []
 root = Tk()
@@ -11,8 +12,11 @@ root.title("CS Solar System")
 xwidth = 350
 screen_resolution = str(xwidth)+'x'+str(190)
 
+            
+
 root.geometry(screen_resolution)
 
+#setup tkinter interface
 nameLabel = Label(root, text="Object Name:")
 nameLabel.grid(row=0, column=0)
 
@@ -65,7 +69,7 @@ planetDeleteEntry = Entry(root, width = 15, relief=FLAT)
 planetDeleteEntry.grid(row=0, column=3)
 
 
-
+#new planet class
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
@@ -92,6 +96,7 @@ class Planet():
         self.circle.y = self.y
         
 randomnames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
+
 #new planet
 def new_planet():
     if var.get() == 1:
@@ -101,13 +106,17 @@ def new_planet():
     objects.append(planet)
     planet.draw()
 
+#delete planet
 def deletePlanet():
     planetTodelete = planetDeleteEntry.get()
     for planet in objects:
-        if planet.name == planetTodelete:
+        planetName = planet.name
+        if planetName.lower() == planetTodelete.lower():
             objects.remove(planet)
             planet.circle.delete()
             currentPlanetslabel.config(text = currentPlanets)
+
+
             
 #new planet button
 generateButton = Button(root, text="Generate", command=new_planet)
@@ -125,8 +134,8 @@ def pause():
     paused = True
     pauseButton.config(text="Resume")
     pauseButton.config(command=resume)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255))
-    pausedLabel.draw()
+    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    window.flip()
     print("Paused")
 
 
@@ -137,6 +146,7 @@ def resume():
     pauseButton.config(command=pause)
     pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255))
     pausedLabel.delete()
+    window.flip()
     print("Unpaused")
 
 pauseButton = Button(root, text="Pause", command=pause)
@@ -168,6 +178,8 @@ while running:
                     
         for planet in temp_object_list:
             objects.remove(planet)
+
+        exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
         window.switch_to()
         window.dispatch_events()
@@ -177,9 +189,10 @@ while running:
         for planet in objects:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
-
+        
+        
     screen_resolution = str(xwidth)+'x'+str(190 + 15*len(objects))
-
+        
     root.geometry(screen_resolution)
 
 
@@ -197,17 +210,12 @@ while running:
                 
         if symbol == key.P and paused == False:
             pause()
-            pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255))
-            pausedLabel.draw()
+            window.flip()
             symbol = key.R
-            
-         
-            
 
         if symbol == key.P and paused == True:
             resume()
-            pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255))
-            pausedLabel.delete()
+            window.flip()
             symbol = key.R
             
 
