@@ -5,15 +5,14 @@ import random
 
 #window setup
 window = pyglet.window.Window(1200, 600)
+window.set_caption("View Window")
 key = pyglet.window.key
 objects = []
 root = Tk()
-root.title("CS Solar System")
-xwidth = 350
-screen_resolution = str(xwidth)+'x'+str(190)
-
-            
-
+root.title("Control Panel")
+xwidth = 380
+yheight = 210
+screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 
 #setup tkinter interface
@@ -23,11 +22,19 @@ nameLabel.grid(row=0, column=0)
 nameEntry = Entry(root, width = 8, relief=FLAT)
 nameEntry.grid(row=0, column=1)
 
+varName = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize Name", variable=varName)
+nameCheckbox.grid(row=0, column=2)
+
 massLabel = Label(root, text="Mass:")
 massLabel.grid(row=1, column=0)
 
 massEntry = Entry(root, width = 8, relief=FLAT)
 massEntry.grid(row=1, column=1)
+
+varMass = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize Mass", variable=varMass)
+nameCheckbox.grid(row=1, column=2)
 
 directionLabel = Label(root, text="Direction:")
 directionLabel.grid(row=2, column=0)
@@ -35,11 +42,19 @@ directionLabel.grid(row=2, column=0)
 directionEntry = Entry(root, width = 8, relief=FLAT)
 directionEntry.grid(row=2, column=1)
 
+varDirection = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize Direction", variable=varDirection)
+nameCheckbox.grid(row=2, column=2)
+
 velocityLabel = Label(root, text="Velocity:")
 velocityLabel.grid(row=3, column=0)
 
 velocityEntry = Entry(root, width = 8, relief=FLAT)
 velocityEntry.grid(row=3, column=1)
+
+varVelocity = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize Velocity", variable=varVelocity)
+nameCheckbox.grid(row=3, column=2)
 
 xcoordLabel = Label(root, text="X Coordinate:")
 xcoordLabel.grid(row=4, column=0)
@@ -47,15 +62,23 @@ xcoordLabel.grid(row=4, column=0)
 xcoordEntry = Entry(root, width = 8, relief=FLAT)
 xcoordEntry.grid(row=4, column=1)
 
+varXcoord = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize X coord", variable=varXcoord)
+nameCheckbox.grid(row=4, column=2)
+
 ycoordLabel = Label(root, text="Y Coordinate:")
 ycoordLabel.grid(row=5, column=0)
 
 ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
 
-var = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize", variable=var)
-nameCheckbox.grid(row=6, column=1)
+varYcoord = IntVar()
+nameCheckbox = Checkbutton(root, text="Ranomize Y coord", variable=varYcoord)
+nameCheckbox.grid(row=5, column=2)
+
+varAll = IntVar()
+allCheckbox = Checkbutton(root, text="Randomize All", variable=varAll)
+allCheckbox.grid(row=5, column=3)
 
 currentPlanetLabel = Label(root, text="Current Planets:")
 currentPlanetLabel.grid(row=7, column=0)
@@ -64,9 +87,9 @@ currentPlanetslabel = Label(root, text = currentPlanets)
 currentPlanetslabel.grid(row=8, column=0)
 
 planetDeletelabel = Label(root, text="Delete Planet:")
-planetDeletelabel.grid(row=0, column=2)
+planetDeletelabel.grid(row=6, column=2)
 planetDeleteEntry = Entry(root, width = 15, relief=FLAT)
-planetDeleteEntry.grid(row=0, column=3)
+planetDeleteEntry.grid(row=6, column=3)
 
 
 #new planet class
@@ -100,10 +123,81 @@ randomnames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus
 
 #new planet
 def new_planet():
-    if var.get() == 1:
-        planet = Planet(random.choice(randomnames), random.randint(200, 1000), random.randint(100, 500), random.randint(50, 500), random.randint(0, 360), random.randint(1, 15))
+    if varAll.get() == 1:
+        name = random.choice(randomnames)
+        mass = random.randint(50, 500)
+        direction = random.randint(0, 360)
+        velocity = random.randint(1, 15)
+        x = random.randint(100, 1100)
+        y = random.randint(100, 500)
+        nameEntry.config(bg = "white")
+        massEntry.config(bg = "white")
+        directionEntry.config(bg = "white")
+        velocityEntry.config(bg = "white")
+        xcoordEntry.config(bg = "white")
+        ycoordEntry.config(bg = "white")
     else:
-        planet = Planet(nameEntry.get(), float(xcoordEntry.get()), float(ycoordEntry.get()), float(massEntry.get()), float(directionEntry.get()), float(velocityEntry.get()))
+        if varName.get() == 1:
+            name = random.choice(randomnames)
+        else:
+            if nameEntry.get() == "":
+                nameEntry.config(bg = "red")
+            else:
+                name = nameEntry.get()
+                nameEntry.config(bg = "white")
+        if varMass.get() == 1:
+            mass = random.randint(50, 500)
+        else:
+            try:
+                mass = int(massEntry.get())
+                massEntry.config(bg = "white")
+            except:
+                massEntry.config(bg = "red")
+        if varDirection.get() == 1:
+            direction = random.randint(0, 360)
+        else:
+            try:
+                direction = int(directionEntry.get())
+                directionEntry.config(bg = "white")
+            except:
+                directionEntry.config(bg = "red")
+        if varVelocity.get() == 1:
+            velocity = random.randint(1, 15)
+        else:
+            try:
+                velocity = int(velocityEntry.get())
+                velocityEntry.config(bg = "white")
+            except:
+                velocityEntry.config(bg = "red")
+        if varXcoord.get() == 1:
+            x = random.randint(100, 1100)
+        else:
+            try:
+                x = int(xcoordEntry.get())
+                xcoordEntry.config(bg = "white")
+            except:
+                xcoordEntry.config(bg = "red")
+        if varYcoord.get() == 1:
+            y = random.randint(100, 500)
+        else:
+            try:
+                y = int(ycoordEntry.get())
+                ycoordEntry.config(bg = "white")
+            except:
+                ycoordEntry.config(bg = "red")
+    planet = Planet(name, x, y, mass, direction, velocity) #sets planet attributes
+    nameEntry.delete(0, END)
+    nameEntry.insert(0, name)
+    massEntry.delete(0, END)
+    massEntry.insert(0, mass)
+    directionEntry.delete(0, END)
+    directionEntry.insert(0, direction)
+    velocityEntry.delete(0, END)
+    velocityEntry.insert(0, velocity)
+    xcoordEntry.delete(0, END)
+    xcoordEntry.insert(0, x)
+    ycoordEntry.delete(0, END)
+    ycoordEntry.insert(0, y)
     objects.append(planet)
     planet.draw()
 
@@ -116,6 +210,7 @@ def deletePlanet():
             objects.remove(planet)
             planet.circle.delete()
             currentPlanetslabel.config(text = currentPlanets)
+            break
 
 
             
@@ -125,11 +220,12 @@ generateButton.grid(row=6, column=0)
 
 #delete planet button
 planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
-planetDeletebutton.grid(row=1, column=3)
+planetDeletebutton.grid(row=7, column=3)
 
 running = True
 paused = False
 
+#pause procedure
 def pause():
     global paused
     paused = True
@@ -139,7 +235,7 @@ def pause():
     window.flip()
     print("Paused")
 
-
+#resume procedure
 def resume():
     global paused
     paused = False
@@ -150,10 +246,10 @@ def resume():
     window.flip()
     print("Unpaused")
 
-pauseButton = Button(root, text="Pause", command=pause)
-pauseButton.grid(row=2, column=3)
+pauseButton = Button(root, text="Pause", command=pause) #pause button
+pauseButton.grid(row=7, column=2)
 
-
+#main loop
 while running:
     if not paused:
         window.switch_to()
@@ -162,7 +258,7 @@ while running:
         root.update()
         window.clear()
         temp_object_list = []
-        for planet in objects:
+        for planet in objects: #updates the position of each planet
             if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
                 temp_object_list.append(planet)
 
@@ -191,7 +287,7 @@ while running:
         currentPlanetslabel.config(text = currentPlanets)
         
     #increase window size when more planets being displayed  
-    screen_resolution = str(xwidth)+'x'+str(190 + 15*len(objects))
+    screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects))
     root.geometry(screen_resolution)
 
 
