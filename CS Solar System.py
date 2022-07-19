@@ -2,6 +2,7 @@ from tkinter import *
 import pyglet
 import math
 import random
+from pyglet import clock
 
 #window setup
 window = pyglet.window.Window(1200, 600)
@@ -10,7 +11,7 @@ key = pyglet.window.key
 objects = []
 root = Tk()
 root.title("Control Panel")
-xwidth = 380
+xwidth = 400
 yheight = 210
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
@@ -91,6 +92,11 @@ planetDeletelabel.grid(row=6, column=2)
 planetDeleteEntry = Entry(root, width = 15, relief=FLAT)
 planetDeleteEntry.grid(row=6, column=3)
 
+velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
+velocityMultiplierlabel.grid(row=0, column=3)
+velocityMultiplierentry = Entry(root, width = 8, relief=FLAT)
+velocityMultiplierentry.grid(row=1, column=3)
+
 
 #new planet class
 class Planet():
@@ -114,9 +120,13 @@ class Planet():
 
     #updates the position of the planet
     def update(self):
-        self.x += self.vx
-        self.y += self.vy
-        self.circle.x = self.x
+        velMult = velocityMultiplierentry.get()
+        if not velMult.isdigit():
+            velMult = 1
+        velMult = float(velMult)
+        self.x += self.vx * dt * velMult
+        self.y += self.vy * dt * velMult
+        self.circle.x = self.x 
         self.circle.y = self.y
         
 randomnames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
@@ -127,7 +137,7 @@ def new_planet():
         name = random.choice(randomnames)
         mass = random.randint(50, 500)
         direction = random.randint(0, 360)
-        velocity = random.randint(1, 15)
+        velocity = random.randint(10, 150)
         x = random.randint(100, 1100)
         y = random.randint(100, 500)
         nameEntry.config(bg = "white")
@@ -162,7 +172,7 @@ def new_planet():
             except:
                 directionEntry.config(bg = "red")
         if varVelocity.get() == 1:
-            velocity = random.randint(1, 15)
+            velocity = random.randint(10, 150)
         else:
             try:
                 velocity = int(velocityEntry.get())
@@ -231,7 +241,7 @@ def pause():
     paused = True
     pauseButton.config(text="Resume")
     pauseButton.config(command=resume)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     window.flip()
     print("Paused")
 
@@ -241,16 +251,20 @@ def resume():
     paused = False
     pauseButton.config(text="Pause")
     pauseButton.config(command=pause)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255))
-    pausedLabel.delete()
+    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).delete()
     window.flip()
     print("Unpaused")
 
 pauseButton = Button(root, text="Pause", command=pause) #pause button
 pauseButton.grid(row=7, column=2)
 
+
+
 #main loop
 while running:
+    dt = clock.tick()
+    #show fps
+    fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 45, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     if not paused:
         window.switch_to()
         window.dispatch_events()
