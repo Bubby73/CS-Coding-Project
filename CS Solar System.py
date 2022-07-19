@@ -11,8 +11,7 @@ key = pyglet.window.key
 objects = []
 root = Tk()
 root.title("Control Panel")
-xwidth = 400
-yheight = 210
+xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 
@@ -94,8 +93,13 @@ planetDeleteEntry.grid(row=6, column=3)
 
 velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
 velocityMultiplierlabel.grid(row=0, column=3)
-velocityMultiplierentry = Entry(root, width = 8, relief=FLAT)
-velocityMultiplierentry.grid(row=1, column=3)
+velocityMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
+velocityMultiplierslider.grid(row=1, column=3)
+
+generateMultiplierlabel = Label(root, text="Generate Multiplier:")
+generateMultiplierlabel.grid(row=2, column=3)
+generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
+generateMultiplierslider.grid(row=3, column=3)
 
 
 #new planet class
@@ -120,10 +124,7 @@ class Planet():
 
     #updates the position of the planet
     def update(self):
-        velMult = velocityMultiplierentry.get()
-        if not velMult.isdigit():
-            velMult = 1
-        velMult = float(velMult)
+        velMult = velocityMultiplierslider.get()
         self.x += self.vx * dt * velMult
         self.y += self.vy * dt * velMult
         self.circle.x = self.x 
@@ -133,83 +134,84 @@ randomnames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus
 
 #new planet
 def new_planet():
-    if varAll.get() == 1:
-        name = random.choice(randomnames)
-        mass = random.randint(50, 500)
-        direction = random.randint(0, 360)
-        velocity = random.randint(10, 150)
-        x = random.randint(100, 1100)
-        y = random.randint(100, 500)
-        nameEntry.config(bg = "white")
-        massEntry.config(bg = "white")
-        directionEntry.config(bg = "white")
-        velocityEntry.config(bg = "white")
-        xcoordEntry.config(bg = "white")
-        ycoordEntry.config(bg = "white")
-    else:
-        if varName.get() == 1:
+    for i in range(generateMultiplierslider.get()):
+        if varAll.get() == 1:
             name = random.choice(randomnames)
-        else:
-            if nameEntry.get() == "":
-                nameEntry.config(bg = "red")
-            else:
-                name = nameEntry.get()
-                nameEntry.config(bg = "white")
-        if varMass.get() == 1:
             mass = random.randint(50, 500)
-        else:
-            try:
-                mass = int(massEntry.get())
-                massEntry.config(bg = "white")
-            except:
-                massEntry.config(bg = "red")
-        if varDirection.get() == 1:
             direction = random.randint(0, 360)
-        else:
-            try:
-                direction = int(directionEntry.get())
-                directionEntry.config(bg = "white")
-            except:
-                directionEntry.config(bg = "red")
-        if varVelocity.get() == 1:
             velocity = random.randint(10, 150)
-        else:
-            try:
-                velocity = int(velocityEntry.get())
-                velocityEntry.config(bg = "white")
-            except:
-                velocityEntry.config(bg = "red")
-        if varXcoord.get() == 1:
             x = random.randint(100, 1100)
-        else:
-            try:
-                x = int(xcoordEntry.get())
-                xcoordEntry.config(bg = "white")
-            except:
-                xcoordEntry.config(bg = "red")
-        if varYcoord.get() == 1:
             y = random.randint(100, 500)
+            nameEntry.config(bg = "white")
+            massEntry.config(bg = "white")
+            directionEntry.config(bg = "white")
+            velocityEntry.config(bg = "white")
+            xcoordEntry.config(bg = "white")
+            ycoordEntry.config(bg = "white")
         else:
-            try:
-                y = int(ycoordEntry.get())
-                ycoordEntry.config(bg = "white")
-            except:
-                ycoordEntry.config(bg = "red")
-    planet = Planet(name, x, y, mass, direction, velocity) #sets planet attributes
-    nameEntry.delete(0, END)
-    nameEntry.insert(0, name)
-    massEntry.delete(0, END)
-    massEntry.insert(0, mass)
-    directionEntry.delete(0, END)
-    directionEntry.insert(0, direction)
-    velocityEntry.delete(0, END)
-    velocityEntry.insert(0, velocity)
-    xcoordEntry.delete(0, END)
-    xcoordEntry.insert(0, x)
-    ycoordEntry.delete(0, END)
-    ycoordEntry.insert(0, y)
-    objects.append(planet)
-    planet.draw()
+            if varName.get() == 1:
+                name = random.choice(randomnames)
+            else:
+                if nameEntry.get() == "":
+                    nameEntry.config(bg = "red")
+                else:
+                    name = nameEntry.get()
+                    nameEntry.config(bg = "white")
+            if varMass.get() == 1:
+                mass = random.randint(50, 500)
+            else:
+                try:
+                    mass = int(massEntry.get())
+                    massEntry.config(bg = "white")
+                except:
+                    massEntry.config(bg = "red")
+            if varDirection.get() == 1:
+                direction = random.randint(0, 360)
+            else:
+                try:
+                    direction = int(directionEntry.get())
+                    directionEntry.config(bg = "white")
+                except:
+                    directionEntry.config(bg = "red")
+            if varVelocity.get() == 1:
+                velocity = random.randint(10, 150)
+            else:
+                try:
+                    velocity = int(velocityEntry.get())
+                    velocityEntry.config(bg = "white")
+                except:
+                    velocityEntry.config(bg = "red")
+            if varXcoord.get() == 1:
+                x = random.randint(100, 1100)
+            else:
+                try:
+                    x = int(xcoordEntry.get())
+                    xcoordEntry.config(bg = "white")
+                except:
+                    xcoordEntry.config(bg = "red")
+            if varYcoord.get() == 1:
+                y = random.randint(100, 500)
+            else:
+                try:
+                    y = int(ycoordEntry.get())
+                    ycoordEntry.config(bg = "white")
+                except:
+                    ycoordEntry.config(bg = "red")
+        planet = Planet(name, x, y, mass, direction, velocity) #sets planet attributes
+        nameEntry.delete(0, END)
+        nameEntry.insert(0, name)
+        massEntry.delete(0, END)
+        massEntry.insert(0, mass)
+        directionEntry.delete(0, END)
+        directionEntry.insert(0, direction)
+        velocityEntry.delete(0, END)
+        velocityEntry.insert(0, velocity)
+        xcoordEntry.delete(0, END)
+        xcoordEntry.insert(0, x)
+        ycoordEntry.delete(0, END)
+        ycoordEntry.insert(0, y)
+        objects.append(planet)
+        planet.draw()
 
 #delete planet
 def deletePlanet():
@@ -264,12 +266,13 @@ pauseButton.grid(row=7, column=2)
 while running:
     dt = clock.tick()
     #show fps
-    fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 45, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    window.switch_to()
+    window.dispatch_events()
+    root.update()
+    currentPlanetLabel.config(text = "Current Planets: " + str(len(objects)))
     if not paused:
-        window.switch_to()
-        window.dispatch_events()
         window.flip()
-        root.update()
         window.clear()
         temp_object_list = []
         for planet in objects: #updates the position of each planet
@@ -292,9 +295,6 @@ while running:
 
         exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
-        window.switch_to()
-        window.dispatch_events()
-        root.update()
         currentPlanets = ""
         for planet in objects:
             currentPlanets += planet.name + "\n"
