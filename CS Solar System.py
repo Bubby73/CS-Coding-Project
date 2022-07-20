@@ -93,12 +93,12 @@ planetDeleteEntry.grid(row=6, column=3)
 
 velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
 velocityMultiplierlabel.grid(row=0, column=3)
-velocityMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
+velocityMultiplierslider = Scale(root, from_=1, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:")
 generateMultiplierlabel.grid(row=2, column=3)
-generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
+generateMultiplierslider = Scale(root, from_=1, to=100, orient=HORIZONTAL, length=100)
 generateMultiplierslider.grid(row=3, column=3)
 
 
@@ -125,8 +125,8 @@ class Planet():
     #updates the position of the planet
     def update(self):
         velMult = velocityMultiplierslider.get()
-        self.x += self.vx * dt * velMult
-        self.y += self.vy * dt * velMult
+        self.x += self.vx * velMult * dt 
+        self.y += self.vy * velMult * dt
         self.circle.x = self.x 
         self.circle.y = self.y
         
