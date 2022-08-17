@@ -16,7 +16,7 @@ root.title("Control Panel")
 xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
-
+planet_image = pyglet.image.load("planet.png")
 batch = pyglet.graphics.Batch()
 
 # setup tkinter interface
@@ -113,15 +113,21 @@ class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
         self.mass = mass
-        self.radius = mass / 10
-        self.x = x
-        self.y = y
+        self.radius = mass / 3000
+        # set the x and y coordinates in the center of the circle
+        self.x = x 
+        self.y = y 
         self.direction = direction
         self.velocity = velocity 
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
         self.vy = math.cos(math.radians(self.direction)) * self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.colour, batch=batch)
+        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
+        self.circle.scale = self.radius 
+        self.circle.color = self.colour
+        #find centre of planet
+        
+
 
 
 
@@ -286,15 +292,15 @@ while running:
         window.clear()
         temp_object_list = []
         for planet in objects: # updates the position of each planet
-            if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
+            if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
                 temp_object_list.append(planet)
-
+                
 
             else:
                 planet.update()
                 planet.draw()
 
-        # add planets to current planets label
+        # add planets to current planets label in tkinter window
         currentPlanets = ""
         for planet in objects:
             currentPlanets += planet.name + "\n"
