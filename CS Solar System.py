@@ -1,10 +1,12 @@
+# import libraries
 from tkinter import *
+from turtle import circle 
 import pyglet
 import math
 import random
-from pyglet import clock
+from pyglet import clock 
 
-#window setup
+# window setup
 window = pyglet.window.Window(1200, 600)
 window.set_caption("View Window")
 key = pyglet.window.key
@@ -15,7 +17,9 @@ xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 
-#setup tkinter interface
+batch = pyglet.graphics.Batch()
+
+# setup tkinter interface
 nameLabel = Label(root, text="Object Name:")
 nameLabel.grid(row=0, column=0)
 
@@ -95,6 +99,8 @@ velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
 velocityMultiplierlabel.grid(row=0, column=3)
 velocityMultiplierslider = Scale(root, from_=1, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
+# set slider to 5
+velocityMultiplierslider.set(5)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:")
 generateMultiplierlabel.grid(row=2, column=3)
@@ -102,7 +108,7 @@ generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length
 generateMultiplierslider.grid(row=3, column=3)
 
 
-#new planet class
+# new planet class
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
@@ -111,18 +117,18 @@ class Planet():
         self.x = x
         self.y = y
         self.direction = direction
-        self.velocity = velocity
-        self.vx = math.sin(math.radians(self.direction)) * self.velocity
+        self.velocity = velocity 
+        self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
         self.vy = math.cos(math.radians(self.direction)) * self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.colour, batch=batch)
 
-        self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.colour)
 
 
     def draw(self):
         self.circle.draw()
 
-    #updates the position of the planet
+    # updates the position of the planet
     def update(self):
         velMult = velocityMultiplierslider.get()
         self.x += self.vx * velMult * dt 
@@ -130,16 +136,20 @@ class Planet():
         self.circle.x = self.x 
         self.circle.y = self.y
         
-randomnames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
+planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
 
-#new planet
+#generate pyglet sprite
+
+
+
+# new planet
 def new_planet():
     for i in range(generateMultiplierslider.get()):
         if varAll.get() == 1:
-            name = random.choice(randomnames)
+            name = random.choice(planetNamelist)
             mass = random.randint(50, 500)
             direction = random.randint(0, 360)
-            velocity = random.randint(10, 150)
+            velocity = random.randint(10,50)
             x = random.randint(100, 1100)
             y = random.randint(100, 500)
             nameEntry.config(bg = "white")
@@ -150,7 +160,7 @@ def new_planet():
             ycoordEntry.config(bg = "white")
         else:
             if varName.get() == 1:
-                name = random.choice(randomnames)
+                name = random.choice(planetNamelist)
             else:
                 if nameEntry.get() == "":
                     nameEntry.config(bg = "red")
@@ -174,7 +184,7 @@ def new_planet():
                 except:
                     directionEntry.config(bg = "red")
             if varVelocity.get() == 1:
-                velocity = random.randint(10, 150)
+                velocity = random.randint(10, 50)
             else:
                 try:
                     velocity = int(velocityEntry.get())
@@ -197,7 +207,7 @@ def new_planet():
                     ycoordEntry.config(bg = "white")
                 except:
                     ycoordEntry.config(bg = "red")
-        planet = Planet(name, x, y, mass, direction, velocity) #sets planet attributes
+        planet = Planet(name, x, y, mass, direction, velocity) # sets planet attributes
         nameEntry.delete(0, END)
         nameEntry.insert(0, name)
         massEntry.delete(0, END)
@@ -213,7 +223,7 @@ def new_planet():
         objects.append(planet)
         planet.draw()
 
-#delete planet
+# delete planet
 def deletePlanet():
     planetTodelete = planetDeleteEntry.get()
     for planet in objects:
@@ -226,18 +236,18 @@ def deletePlanet():
 
 
             
-#new planet button
+# new planet button
 generateButton = Button(root, text="Generate", command=new_planet)
 generateButton.grid(row=6, column=0)
 
-#delete planet button
+# delete planet button
 planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
 planetDeletebutton.grid(row=7, column=3)
 
 running = True
 paused = False
 
-#pause procedure
+# pause procedure
 def pause():
     global paused
     paused = True
@@ -247,7 +257,7 @@ def pause():
     window.flip()
     print("Paused")
 
-#resume procedure
+# resume procedure
 def resume():
     global paused
     paused = False
@@ -257,12 +267,12 @@ def resume():
     window.flip()
     print("Unpaused")
 
-pauseButton = Button(root, text="Pause", command=pause) #pause button
+pauseButton = Button(root, text="Pause", command=pause) # pause button
 pauseButton.grid(row=7, column=2)
 
 
 
-#main loop
+ # main loop
 while running:
     dt = clock.tick()
     #show fps
@@ -275,7 +285,7 @@ while running:
         window.flip()
         window.clear()
         temp_object_list = []
-        for planet in objects: #updates the position of each planet
+        for planet in objects: # updates the position of each planet
             if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
                 temp_object_list.append(planet)
 
@@ -284,7 +294,7 @@ while running:
                 planet.update()
                 planet.draw()
 
-        #add planets to current planets label
+        # add planets to current planets label
         currentPlanets = ""
         for planet in objects:
             currentPlanets += planet.name + "\n"
@@ -300,12 +310,12 @@ while running:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
         
-    #increase window size when more planets being displayed  
+    # increase window size when more planets being displayed  
     screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects))
     root.geometry(screen_resolution)
 
 
-    #detect if a key is pressed
+    # detect if a key is pressed
     @window.event()
     def on_key_press(symbol, modifiers):
         global running
@@ -319,7 +329,7 @@ while running:
         if symbol == key.P and paused == False:
             pause()
             window.flip()
-            #temporarily set symbol to not P to prevent infinite loop
+            # temporarily set symbol to not P to prevent infinite loop
             symbol = key.R
 
         if symbol == key.P and paused == True:
