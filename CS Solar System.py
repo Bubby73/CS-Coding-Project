@@ -123,6 +123,8 @@ class Planet():
         self.vy = math.cos(math.radians(self.direction)) * self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
+        self.circle.scale = self.radius
+        self.circle.color = self.colour
         
     def draw(self):
         self.circle.draw()
