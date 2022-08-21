@@ -113,8 +113,7 @@ class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
         self.mass = mass
-        self.radius = mass / 3000
-        # set the x and y coordinates in the center of the circle
+        self.radius = mass / 300
         self.x = x 
         self.y = y 
         self.direction = direction
@@ -131,12 +130,23 @@ class Planet():
 
     # updates the position of the planet
     def update(self):
-        velMult = velocityMultiplierslider.get()
-        self.x += self.vx * velMult * dt 
-        self.y += self.vy * velMult * dt
-        self.circle.x = self.x 
+        # give planets gravity
+        for planet in objects:
+            if planet != self:
+                dx = planet.x - self.x
+                dy = planet.y - self.y
+                distance = math.sqrt(dx ** 2 + dy ** 2)
+                force = self.mass * planet.mass / (distance ** 2) + 0.000000001
+                ax = dx / distance * force
+                ay = dy / distance * force
+                self.vx += ax / 2
+                self.vy += ay / 2
+        # update position
+        self.x += self.vx
+        self.y += self.vy
+        self.circle.x = self.x
         self.circle.y = self.y
-        
+
 # random planet names      
 planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
 
@@ -145,9 +155,9 @@ def new_planet():
     for i in range(generateMultiplierslider.get()):
         if varAll.get() == 1:
             name = random.choice(planetNamelist)
-            mass = random.randint(50, 500)
+            mass = random.randint(5, 50)
             direction = random.randint(0, 360)
-            velocity = random.randint(10,50)
+            velocity = random.randint(1,5)
             x = random.randint(100, 1100)
             y = random.randint(100, 500)
             nameEntry.config(bg = "white")
@@ -172,7 +182,7 @@ def new_planet():
                     name = nameEntry.get()
                     nameEntry.config(bg = "white")
             if varMass.get() == 1:
-                mass = random.randint(50, 500)
+                mass = random.randint(5, 50)
             else:
                 try:
                     mass = int(massEntry.get())
@@ -188,7 +198,7 @@ def new_planet():
                 except:
                     directionEntry.config(bg = "red")
             if varVelocity.get() == 1:
-                velocity = random.randint(10, 50)
+                velocity = random.randint(1, 5)
             else:
                 try:
                     velocity = int(velocityEntry.get())
