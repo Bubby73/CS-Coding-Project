@@ -37,8 +37,8 @@ massEntry = Entry(root, width = 8, relief=FLAT)
 massEntry.grid(row=1, column=1)
 
 varMass = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize Mass", variable=varMass)
-nameCheckbox.grid(row=1, column=2)
+massCheckbox = Checkbutton(root, text="Ranomize Mass", variable=varMass)
+massCheckbox.grid(row=1, column=2)
 
 directionLabel = Label(root, text="Direction:")
 directionLabel.grid(row=2, column=0)
@@ -47,8 +47,8 @@ directionEntry = Entry(root, width = 8, relief=FLAT)
 directionEntry.grid(row=2, column=1)
 
 varDirection = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize Direction", variable=varDirection)
-nameCheckbox.grid(row=2, column=2)
+dirCheckbox = Checkbutton(root, text="Ranomize Direction", variable=varDirection)
+dirCheckbox.grid(row=2, column=2)
 
 velocityLabel = Label(root, text="Velocity:")
 velocityLabel.grid(row=3, column=0)
@@ -57,8 +57,8 @@ velocityEntry = Entry(root, width = 8, relief=FLAT)
 velocityEntry.grid(row=3, column=1)
 
 varVelocity = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize Velocity", variable=varVelocity)
-nameCheckbox.grid(row=3, column=2)
+velCheckbox = Checkbutton(root, text="Ranomize Velocity", variable=varVelocity)
+velCheckbox.grid(row=3, column=2)
 
 xcoordLabel = Label(root, text="X Coordinate:")
 xcoordLabel.grid(row=4, column=0)
@@ -67,8 +67,8 @@ xcoordEntry = Entry(root, width = 8, relief=FLAT)
 xcoordEntry.grid(row=4, column=1)
 
 varXcoord = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize X coord", variable=varXcoord)
-nameCheckbox.grid(row=4, column=2)
+xCheckbox = Checkbutton(root, text="Ranomize X coord", variable=varXcoord)
+xCheckbox.grid(row=4, column=2)
 
 ycoordLabel = Label(root, text="Y Coordinate:")
 ycoordLabel.grid(row=5, column=0)
@@ -77,8 +77,8 @@ ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
 
 varYcoord = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize Y coord", variable=varYcoord)
-nameCheckbox.grid(row=5, column=2)
+yCheckbox = Checkbutton(root, text="Ranomize Y coord", variable=varYcoord)
+yCheckbox.grid(row=5, column=2)
 
 varAll = IntVar()
 allCheckbox = Checkbutton(root, text="Randomize All", variable=varAll)
@@ -137,11 +137,8 @@ class Planet():
         self.circle.x = self.x 
         self.circle.y = self.y
         
+# random planet names      
 planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
-
-#generate pyglet sprite
-
-
 
 # new planet
 def new_planet():
@@ -154,11 +151,17 @@ def new_planet():
             x = random.randint(100, 1100)
             y = random.randint(100, 500)
             nameEntry.config(bg = "white")
+            nameCheckbox.select()
             massEntry.config(bg = "white")
+            massCheckbox.select()
             directionEntry.config(bg = "white")
+            dirCheckbox.select()
             velocityEntry.config(bg = "white")
+            velCheckbox.select()
             xcoordEntry.config(bg = "white")
+            xCheckbox.select()
             ycoordEntry.config(bg = "white")
+            yCheckbox.select()
         else:
             if varName.get() == 1:
                 name = random.choice(planetNamelist)
