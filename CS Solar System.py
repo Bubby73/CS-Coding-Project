@@ -1,6 +1,5 @@
 # import libraries
 from tkinter import *
-from turtle import circle 
 import pyglet
 import math
 import random
@@ -17,6 +16,8 @@ xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 planet_image = pyglet.image.load("planet.png")
+planet_image.anchor_x = planet_image.width // 2 ##this line is new
+planet_image.anchor_y = planet_image.height // 2 ## and this line also
 batch = pyglet.graphics.Batch()
 
 # setup tkinter interface
@@ -107,15 +108,20 @@ generateMultiplierlabel.grid(row=2, column=3)
 generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
 generateMultiplierslider.grid(row=3, column=3)
 
+staticVar = IntVar()
+static = Checkbutton(root, text="Static", variable=staticVar)
+static.grid(row=4, column=3)
+
 
 # new planet class
 class Planet():
-    def __init__(self, name, x, y, mass, direction, velocity):
+    def __init__(self, name, x, y, mass, direction, velocity, static):
         self.name = name
         self.mass = mass
         self.radius = mass / 300
         self.x = x 
         self.y = y 
+        self.static = static
         self.direction = direction
         self.velocity = velocity 
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
@@ -130,28 +136,53 @@ class Planet():
 
     # updates the position of the planet
     def update(self):
-        # give planets gravity
-        for planet in objects:
-            if planet != self:
-                dx = planet.x - self.x
-                dy = planet.y - self.y
-                distance = math.sqrt(dx ** 2 + dy ** 2)
-                force = self.mass * planet.mass / (distance ** 2) + 0.000000001
-                ax = dx / distance * force
-                ay = dy / distance * force
-                self.vx += ax / 2
-                self.vy += ay / 2
-        # update position
-        self.x += self.vx
-        self.y += self.vy
-        self.circle.x = self.x
-        self.circle.y = self.y
+        if self.static == False:
+            # give planets gravity
+            for planet in objects:
+
+                if planet != self:
+                    dx = planet.x - self.x
+                    dy = planet.y - self.y
+                    distance = math.sqrt(dx ** 2 + dy ** 2)
+                    force = self.mass * planet.mass / (distance ** 2) + 0.000000001
+                    ax = dx / distance * force
+                    ay = dy / distance * force
+                    self.vx += ax / 5
+                    self.vy += ay / 5
+            # update position
+            self.x += self.vx * (velocityMultiplierslider.get() / 10)
+            self.y += self.vy * (velocityMultiplierslider.get() / 10)
+            self.circle.x = self.x
+            self.circle.y = self.y
+        else:
+            pass
+
+class staticPlanet():
+    def __init__(self, name, x, y, mass, static):
+        self.name = name
+        self.mass = mass
+        self.static = static
+        self.radius = mass / 300
+        self.x = x 
+        self.y = y 
+        self.static = static
+        self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
+        self.circle.scale = self.radius
+        self.circle.color = self.colour
+        
+    def draw(self):
+        self.circle.draw()
 
 # random planet names      
-planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
+planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon"]
 
 # new planet
 def new_planet():
+    if staticVar.get() == 1:
+        static = True
+    else:
+        static = False
     for i in range(generateMultiplierslider.get()):
         if varAll.get() == 1:
             name = random.choice(planetNamelist)
@@ -221,7 +252,12 @@ def new_planet():
                     ycoordEntry.config(bg = "white")
                 except:
                     ycoordEntry.config(bg = "red")
-        planet = Planet(name, x, y, mass, direction, velocity) # sets planet attributes
+        if static == True:
+            planet = staticPlanet(name, x, y, mass, static)
+            direction = ""
+            velocity = ""
+        else:
+            planet = Planet(name, x, y, mass, direction, velocity, static) # sets planet attributes
         nameEntry.delete(0, END)
         nameEntry.insert(0, name)
         massEntry.delete(0, END)
@@ -248,15 +284,13 @@ def deletePlanet():
             currentPlanetslabel.config(text = currentPlanets)
             break
 
-
-            
-# new planet button
-generateButton = Button(root, text="Generate", command=new_planet)
-generateButton.grid(row=6, column=0)
-
-# delete planet button
-planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
-planetDeletebutton.grid(row=7, column=3)
+# clear all procedure
+def clearAll():
+    for planet in objects:
+        temp_object_list.append(planet)
+    for planet in temp_object_list:
+        objects.remove(planet)
+    currentPlanetslabel.config(text = currentPlanets)
 
 running = True
 paused = False
@@ -281,8 +315,23 @@ def resume():
     window.flip()
     print("Unpaused")
 
+# all buttons
+
+# pause button
 pauseButton = Button(root, text="Pause", command=pause) # pause button
-pauseButton.grid(row=7, column=2)
+pauseButton.grid(row=6, column=1)
+
+# new planet button
+generateButton = Button(root, text="Generate", command=new_planet)
+generateButton.grid(row=6, column=0)
+
+# delete planet button
+planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
+planetDeletebutton.grid(row=7, column=3)
+
+# clear all button
+clearAllbutton = Button(root, text="Clear All", command=clearAll)
+clearAllbutton.grid(row=7, column=2)
 
 
 
@@ -300,13 +349,18 @@ while running:
         window.clear()
         temp_object_list = []
         for planet in objects: # updates the position of each planet
-            if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
-                temp_object_list.append(planet)
-                
+            if planet.static == False:
+                if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
+                    temp_object_list.append(planet)
+                    
 
+                else:
+                    planet.update()
+                    planet.draw()
             else:
-                planet.update()
-                planet.draw()
+                #planet.update()
+                planet.draw()   
+
 
         # add planets to current planets label in tkinter window
         currentPlanets = ""
