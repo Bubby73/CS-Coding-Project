@@ -158,15 +158,15 @@ class Planet():
             pass
 
 class staticPlanet():
-    def __init__(self, name, x, y, mass, static):
-        self.name = name
+    def __init__(self, x, y, mass, static):
+        self.name = "Sun"
         self.mass = mass
         self.static = static
         self.radius = mass / 300
         self.x = x 
         self.y = y 
         self.static = static
-        self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.colour = (255, 255, 0)
         self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
         self.circle.scale = self.radius
         self.circle.color = self.colour
@@ -253,7 +253,7 @@ def new_planet():
                 except:
                     ycoordEntry.config(bg = "red")
         if static == True:
-            planet = staticPlanet(name, x, y, mass, static)
+            planet = staticPlanet(x, y, mass, static)
             direction = ""
             velocity = ""
         else:
