@@ -50,7 +50,21 @@ class Planet():
         self.circle.x = self.x
         self.circle.y = self.y
     
+class Trales():
+    def __init__(self, x, y, colour):
+        self.x = x
+        self.y = y
+        self.colour = colour
+        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
+        self.circle.scale = 0.1
+        self.circle.color = self.colour
 
+    def draw(self):
+        self.circle.draw()
+
+    def update(self):
+        self.circle.x = self.x
+        self.circle.y = self.y
 
 planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "Sun"]
 

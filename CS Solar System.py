@@ -28,7 +28,7 @@ nameEntry = Entry(root, width = 8, relief=FLAT)
 nameEntry.grid(row=0, column=1)
 
 varName = IntVar()
-nameCheckbox = Checkbutton(root, text="Ranomize Name", variable=varName)
+nameCheckbox = Checkbutton(root, text="Randomise Name", variable=varName)
 nameCheckbox.grid(row=0, column=2)
 
 massLabel = Label(root, text="Mass:")
@@ -38,7 +38,7 @@ massEntry = Entry(root, width = 8, relief=FLAT)
 massEntry.grid(row=1, column=1)
 
 varMass = IntVar()
-massCheckbox = Checkbutton(root, text="Ranomize Mass", variable=varMass)
+massCheckbox = Checkbutton(root, text="Randomise Mass", variable=varMass)
 massCheckbox.grid(row=1, column=2)
 
 directionLabel = Label(root, text="Direction:")
@@ -48,7 +48,7 @@ directionEntry = Entry(root, width = 8, relief=FLAT)
 directionEntry.grid(row=2, column=1)
 
 varDirection = IntVar()
-dirCheckbox = Checkbutton(root, text="Ranomize Direction", variable=varDirection)
+dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=varDirection)
 dirCheckbox.grid(row=2, column=2)
 
 velocityLabel = Label(root, text="Velocity:")
@@ -58,7 +58,7 @@ velocityEntry = Entry(root, width = 8, relief=FLAT)
 velocityEntry.grid(row=3, column=1)
 
 varVelocity = IntVar()
-velCheckbox = Checkbutton(root, text="Ranomize Velocity", variable=varVelocity)
+velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=varVelocity)
 velCheckbox.grid(row=3, column=2)
 
 xcoordLabel = Label(root, text="X Coordinate:")
@@ -68,7 +68,7 @@ xcoordEntry = Entry(root, width = 8, relief=FLAT)
 xcoordEntry.grid(row=4, column=1)
 
 varXcoord = IntVar()
-xCheckbox = Checkbutton(root, text="Ranomize X coord", variable=varXcoord)
+xCheckbox = Checkbutton(root, text="Randomise X coord", variable=varXcoord)
 xCheckbox.grid(row=4, column=2)
 
 ycoordLabel = Label(root, text="Y Coordinate:")
@@ -78,11 +78,11 @@ ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
 
 varYcoord = IntVar()
-yCheckbox = Checkbutton(root, text="Ranomize Y coord", variable=varYcoord)
+yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=varYcoord)
 yCheckbox.grid(row=5, column=2)
 
 varAll = IntVar()
-allCheckbox = Checkbutton(root, text="Randomize All", variable=varAll)
+allCheckbox = Checkbutton(root, text="Randomise All", variable=varAll)
 allCheckbox.grid(row=5, column=3)
 
 currentPlanetLabel = Label(root, text="Current Planets:")
@@ -98,7 +98,7 @@ planetDeleteEntry.grid(row=6, column=3)
 
 velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
 velocityMultiplierlabel.grid(row=0, column=3)
-velocityMultiplierslider = Scale(root, from_=1, to=15, orient=HORIZONTAL, length=100)
+velocityMultiplierslider = Scale(root, from_=-15, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
 # set slider to 5
 velocityMultiplierslider.set(5)
@@ -109,19 +109,20 @@ generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length
 generateMultiplierslider.grid(row=3, column=3)
 
 staticVar = IntVar()
-static = Checkbutton(root, text="Static", variable=staticVar)
+static = Checkbutton(root, text="Star", variable=staticVar)
 static.grid(row=4, column=3)
 
 
 # new planet class
 class Planet():
-    def __init__(self, name, x, y, mass, direction, velocity, static):
+    def __init__(self, name, x, y, mass, direction, velocity, static, trailNum):
         self.name = name
         self.mass = mass
-        self.radius = mass / 300
+        self.radius = mass / 150
         self.x = x 
         self.y = y 
         self.static = static
+        self.trailNum = trailNum
         self.direction = direction
         self.velocity = velocity 
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
@@ -154,6 +155,18 @@ class Planet():
             self.y += self.vy * (velocityMultiplierslider.get() / 10)
             self.circle.x = self.x
             self.circle.y = self.y
+
+            #draw trail
+            trail = Trail(self.x, self.y + 35,self.radius/3 ,self.colour)
+            trail.draw()
+            traillist = []
+            traillist.append(trail)
+            for trail in traillist:
+                if len(traillist) > 1000:
+                    trail.delete()
+                trail.draw()
+                trail.update()
+            print(len(traillist))
         else:
             pass
 
@@ -162,7 +175,7 @@ class staticPlanet():
         self.name = "Sun"
         self.mass = mass
         self.static = static
-        self.radius = mass / 300
+        self.radius = mass / 3000
         self.x = x 
         self.y = y 
         self.static = static
@@ -172,6 +185,24 @@ class staticPlanet():
         self.circle.color = self.colour
         
     def draw(self):
+        self.circle.draw()
+
+class Trail():
+    def __init__(self, x, y, radius, colour):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.colour = colour
+        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
+        self.circle.scale = self.radius
+        self.circle.color = self.colour
+
+    def draw(self):
+        self.circle.draw()
+
+    def update(self):
+        self.radius = self.radius 
+        self.circle.scale = self.radius
         self.circle.draw()
 
 # random planet names      
@@ -186,7 +217,7 @@ def new_planet():
     for i in range(generateMultiplierslider.get()):
         if varAll.get() == 1:
             name = random.choice(planetNamelist)
-            mass = random.randint(5, 50)
+            mass = random.randint(1, 10)
             direction = random.randint(0, 360)
             velocity = random.randint(1,5)
             x = random.randint(100, 1100)
@@ -213,7 +244,7 @@ def new_planet():
                     name = nameEntry.get()
                     nameEntry.config(bg = "white")
             if varMass.get() == 1:
-                mass = random.randint(5, 50)
+                mass = random.randint(1, 10)
             else:
                 try:
                     mass = int(massEntry.get())
