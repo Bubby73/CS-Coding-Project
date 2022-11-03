@@ -6,7 +6,7 @@ import random
 from pyglet import clock 
 
 # window setup
-window = pyglet.window.Window(1200, 600)
+window = pyglet.window.Window(1200, 600, vsync=0)
 window.set_caption("View Window")
 key = pyglet.window.key
 objects = []
@@ -19,6 +19,9 @@ planet_image = pyglet.image.load("planet.png")
 planet_image.anchor_x = planet_image.width // 2 ##this line is new
 planet_image.anchor_y = planet_image.height // 2 ## and this line also
 batch = pyglet.graphics.Batch()
+#vsync=0 in the window class
+
+
 
 # setup tkinter interface
 nameLabel = Label(root, text="Object Name:")
@@ -302,10 +305,12 @@ paused = False
 # pause procedure
 def pause():
     global paused
+    global pausedLabel
     paused = True
     pauseButton.config(text="Resume")
     pauseButton.config(command=resume)
     pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
+    pausedLabel.batch = None
     window.flip()
     print("Paused")
 
@@ -317,7 +322,7 @@ def resume():
     pauseButton.config(command=pause)
     pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
     window.flip()
-    print("Unpaused")
+    print("Resumed")
 
 # all buttons
 
