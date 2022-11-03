@@ -31,15 +31,15 @@ varName = IntVar()
 nameCheckbox = Checkbutton(root, text="Randomise Name", variable=varName)
 nameCheckbox.grid(row=0, column=2)
 
-massLabel = Label(root, text="Mass:")
-massLabel.grid(row=1, column=0)
+radiusLabel = Label(root, text="Radius:")
+radiusLabel.grid(row=1, column=0)
 
-massEntry = Entry(root, width = 8, relief=FLAT)
-massEntry.grid(row=1, column=1)
+radiusEntry = Entry(root, width = 8, relief=FLAT)
+radiusEntry.grid(row=1, column=1)
 
-varMass = IntVar()
-massCheckbox = Checkbutton(root, text="Randomise Mass", variable=varMass)
-massCheckbox.grid(row=1, column=2)
+varRad = IntVar()
+radiusCheckbox = Checkbutton(root, text="Randomise Radius", variable=varRad)
+radiusCheckbox.grid(row=1, column=2)
 
 directionLabel = Label(root, text="Direction:")
 directionLabel.grid(row=2, column=0)
@@ -112,17 +112,18 @@ staticVar = IntVar()
 static = Checkbutton(root, text="Star", variable=staticVar)
 static.grid(row=4, column=3)
 
+planetDensity = 20
 
 # new planet class
 class Planet():
-    def __init__(self, name, x, y, mass, direction, velocity, static, trailNum):
+    def __init__(self, name, x, y, radius, direction, velocity, static):
+        global planetDensity
         self.name = name
-        self.mass = mass
-        self.radius = mass / 150
+        self.radius = radius / 100
+        self.mass = radius * planetDensity  
         self.x = x 
         self.y = y 
         self.static = static
-        self.trailNum = trailNum
         self.direction = direction
         self.velocity = velocity 
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
@@ -132,8 +133,6 @@ class Planet():
         self.circle.scale = self.radius
         self.circle.color = self.colour
         
-    def draw(self):
-        self.circle.draw()
 
     # updates the position of the planet
     def update(self):
@@ -145,7 +144,7 @@ class Planet():
                     dx = planet.x - self.x
                     dy = planet.y - self.y
                     distance = math.sqrt(dx ** 2 + dy ** 2)
-                    force = self.mass * planet.mass / (distance ** 2) + 0.000000001
+                    force = self.mass * planet.mass / (distance ** 2)
                     ax = dx / distance * force
                     ay = dy / distance * force
                     self.vx += ax / 5
@@ -156,26 +155,15 @@ class Planet():
             self.circle.x = self.x
             self.circle.y = self.y
 
-            #draw trail
-            trail = Trail(self.x, self.y + 35,self.radius/3 ,self.colour)
-            trail.draw()
-            traillist = []
-            traillist.append(trail)
-            for trail in traillist:
-                if len(traillist) > 1000:
-                    trail.delete()
-                trail.draw()
-                trail.update()
-            print(len(traillist))
         else:
             pass
 
 class staticPlanet():
-    def __init__(self, x, y, mass, static):
+    def __init__(self, x, y, radius, static):
         self.name = "Sun"
-        self.mass = mass
         self.static = static
-        self.radius = mass / 3000
+        self.radius = radius / 100
+        self.mass = radius * planetDensity
         self.x = x 
         self.y = y 
         self.static = static
@@ -185,24 +173,6 @@ class staticPlanet():
         self.circle.color = self.colour
         
     def draw(self):
-        self.circle.draw()
-
-class Trail():
-    def __init__(self, x, y, radius, colour):
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.colour = colour
-        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
-        self.circle.scale = self.radius
-        self.circle.color = self.colour
-
-    def draw(self):
-        self.circle.draw()
-
-    def update(self):
-        self.radius = self.radius 
-        self.circle.scale = self.radius
         self.circle.draw()
 
 # random planet names      
@@ -217,15 +187,15 @@ def new_planet():
     for i in range(generateMultiplierslider.get()):
         if varAll.get() == 1:
             name = random.choice(planetNamelist)
-            mass = random.randint(1, 10)
+            radius = random.randint(1, 10)
             direction = random.randint(0, 360)
             velocity = random.randint(1,5)
             x = random.randint(100, 1100)
             y = random.randint(100, 500)
             nameEntry.config(bg = "white")
             nameCheckbox.select()
-            massEntry.config(bg = "white")
-            massCheckbox.select()
+            radiusEntry.config(bg = "white")
+            radiusCheckbox.select()
             directionEntry.config(bg = "white")
             dirCheckbox.select()
             velocityEntry.config(bg = "white")
@@ -243,14 +213,14 @@ def new_planet():
                 else:
                     name = nameEntry.get()
                     nameEntry.config(bg = "white")
-            if varMass.get() == 1:
-                mass = random.randint(1, 10)
+            if varRad.get() == 1:
+                radius = random.randint(1, 10)
             else:
                 try:
-                    mass = int(massEntry.get())
-                    massEntry.config(bg = "white")
+                    radius = int(radiusEntry.get())
+                    radiusEntry.config(bg = "white")
                 except:
-                    massEntry.config(bg = "red")
+                    radiusEntry.config(bg = "red")
             if varDirection.get() == 1:
                 direction = random.randint(0, 360)
             else:
@@ -284,15 +254,15 @@ def new_planet():
                 except:
                     ycoordEntry.config(bg = "red")
         if static == True:
-            planet = staticPlanet(x, y, mass, static)
+            planet = staticPlanet(x, y, radius, static)
             direction = ""
             velocity = ""
         else:
-            planet = Planet(name, x, y, mass, direction, velocity, static) # sets planet attributes
+            planet = Planet(name, x, y, radius, direction, velocity, static) # sets planet attributes
         nameEntry.delete(0, END)
         nameEntry.insert(0, name)
-        massEntry.delete(0, END)
-        massEntry.insert(0, mass)
+        radiusEntry.delete(0, END)
+        radiusEntry.insert(0, radius)
         directionEntry.delete(0, END)
         directionEntry.insert(0, direction)
         velocityEntry.delete(0, END)
@@ -302,7 +272,7 @@ def new_planet():
         ycoordEntry.delete(0, END)
         ycoordEntry.insert(0, y)
         objects.append(planet)
-        planet.draw()
+        
 
 # delete planet
 def deletePlanet():
@@ -322,6 +292,9 @@ def clearAll():
     for planet in temp_object_list:
         objects.remove(planet)
     currentPlanetslabel.config(text = currentPlanets)
+    #delete all planets
+    for planet in objects:
+        planet.circle.delete()
 
 running = True
 paused = False
@@ -332,7 +305,7 @@ def pause():
     paused = True
     pauseButton.config(text="Resume")
     pauseButton.config(command=resume)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
     window.flip()
     print("Paused")
 
@@ -342,7 +315,7 @@ def resume():
     paused = False
     pauseButton.config(text="Pause")
     pauseButton.config(command=pause)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).delete()
+    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
     window.flip()
     print("Unpaused")
 
@@ -387,12 +360,9 @@ while running:
 
                 else:
                     planet.update()
-                    planet.draw()
-            else:
-                #planet.update()
-                planet.draw()   
+     
 
-
+        batch.draw()
         # add planets to current planets label in tkinter window
         currentPlanets = ""
         for planet in objects:
@@ -435,10 +405,11 @@ while running:
             resume()
             window.flip()
             symbol = key.R
-            
+        
 
          
-        
+
+
      
 
 
