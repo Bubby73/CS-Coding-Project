@@ -20,8 +20,8 @@ planet_image.anchor_x = planet_image.width // 2 ##this line is new
 planet_image.anchor_y = planet_image.height // 2 ## and this line also
 batch = pyglet.graphics.Batch()
 #vsync=0 in the window class
-
-
+#G = 6.67408 * 10**-11
+G = 1
 
 # setup tkinter interface
 nameLabel = Label(root, text="Object Name:")
@@ -150,19 +150,19 @@ class Planet():
                             dx = planet.x - self.x
                             dy = planet.y - self.y
                             distance = math.sqrt(dx ** 2 + dy ** 2)
-                            if distance < planet.radius + self.radius:
+                            if (distance / 100) < planet.radius + self.radius:
                                 if self.radius > planet.radius: # delete the smaller planet
                                     objects.remove(planet)
                                     planet.circle.delete()
                                     print("Planet " + planet.name + " has been destroyed by " + self.name)
-                                    pass
+                                    
                                 else:
                                     objects.remove(self)
                                     self.circle.delete()
                                     print("Planet " + self.name + " has been destroyed by " + planet.name)
-                                    pass
+                                    
                             else:
-                                force = self.mass * planet.mass / (distance ** 2)
+                                force = (G * self.mass * planet.mass) / (distance ** 2)
                                 ax = dx / distance * force
                                 ay = dy / distance * force
                                 self.vx += ax / 5
@@ -171,15 +171,12 @@ class Planet():
                             objects.remove(self)
                             self.circle.delete()
                             print("Planet " + self.name + " has been destroyed by " + planet.name)
-                            pass
+                            
             # update position
             self.x += self.vx * (velocityMultiplierslider.get() / 100)
             self.y += self.vy * (velocityMultiplierslider.get() / 100)
             self.circle.x = self.x
             self.circle.y = self.y
-
-        else:
-            pass
 
 class staticPlanet():
     def __init__(self, x, y, radius, static):
