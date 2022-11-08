@@ -88,6 +88,8 @@ varAll = IntVar()
 allCheckbox = Checkbutton(root, text="Randomise All", variable=varAll)
 allCheckbox.grid(row=5, column=3)
 
+varAll.set(1)
+
 currentPlanetLabel = Label(root, text="Current Planets:")
 currentPlanetLabel.grid(row=7, column=0)
 currentPlanets = ""
@@ -104,7 +106,7 @@ velocityMultiplierlabel.grid(row=0, column=3)
 velocityMultiplierslider = Scale(root, from_=-15, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
 # set slider to 5
-velocityMultiplierslider.set(5)
+velocityMultiplierslider.set(0)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:")
 generateMultiplierlabel.grid(row=2, column=3)
@@ -153,8 +155,8 @@ class Planet():
                     self.vx += ax / 5
                     self.vy += ay / 5
             # update position
-            self.x += self.vx * (velocityMultiplierslider.get() / 10)
-            self.y += self.vy * (velocityMultiplierslider.get() / 10)
+            self.x += self.vx * (velocityMultiplierslider.get() / 15)
+            self.y += self.vy * (velocityMultiplierslider.get() / 15)
             self.circle.x = self.x
             self.circle.y = self.y
 
@@ -220,7 +222,7 @@ def new_planet():
                 radius = random.randint(1, 10)
             else:
                 try:
-                    radius = int(radiusEntry.get())
+                    radius = float(radiusEntry.get())
                     radiusEntry.config(bg = "white")
                 except:
                     radiusEntry.config(bg = "red")
@@ -228,7 +230,7 @@ def new_planet():
                 direction = random.randint(0, 360)
             else:
                 try:
-                    direction = int(directionEntry.get())
+                    direction = float(directionEntry.get())
                     directionEntry.config(bg = "white")
                 except:
                     directionEntry.config(bg = "red")
@@ -236,7 +238,7 @@ def new_planet():
                 velocity = random.randint(1, 5)
             else:
                 try:
-                    velocity = int(velocityEntry.get())
+                    velocity = float(velocityEntry.get())
                     velocityEntry.config(bg = "white")
                 except:
                     velocityEntry.config(bg = "red")
@@ -285,19 +287,21 @@ def deletePlanet():
         if planetName.lower() == planetTodelete.lower():
             objects.remove(planet)
             planet.circle.delete()
+            print(planetName + " deleted")
             currentPlanetslabel.config(text = currentPlanets)
             break
 
 # clear all procedure
 def clearAll():
-    for planet in objects:
-        temp_object_list.append(planet)
-    for planet in temp_object_list:
-        objects.remove(planet)
     currentPlanetslabel.config(text = currentPlanets)
-    #delete all planets
     for planet in objects:
         planet.circle.delete()
+        planetName = planet.name
+        print(planetName + " deleted")
+        print("cleared")
+    objects.clear()
+    
+        
 
 running = True
 paused = False
