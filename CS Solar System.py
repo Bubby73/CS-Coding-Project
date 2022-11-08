@@ -105,6 +105,7 @@ velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
 velocityMultiplierlabel.grid(row=0, column=3)
 velocityMultiplierslider = Scale(root, from_=-15, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
+
 # set slider to 5
 velocityMultiplierslider.set(0)
 
@@ -144,19 +145,36 @@ class Planet():
         if self.static == False:
             # give planets gravity
             for planet in objects:
-
-                if planet != self:
-                    dx = planet.x - self.x
-                    dy = planet.y - self.y
-                    distance = math.sqrt(dx ** 2 + dy ** 2)
-                    force = self.mass * planet.mass / (distance ** 2)
-                    ax = dx / distance * force
-                    ay = dy / distance * force
-                    self.vx += ax / 5
-                    self.vy += ay / 5
+                    if planet != self:
+                        if planet.x != self.x and planet.y != self.y:
+                            dx = planet.x - self.x
+                            dy = planet.y - self.y
+                            distance = math.sqrt(dx ** 2 + dy ** 2)
+                            if distance < planet.radius + self.radius:
+                                if self.radius > planet.radius: # delete the smaller planet
+                                    objects.remove(planet)
+                                    planet.circle.delete()
+                                    print("Planet " + planet.name + " has been destroyed by " + self.name)
+                                    pass
+                                else:
+                                    objects.remove(self)
+                                    self.circle.delete()
+                                    print("Planet " + self.name + " has been destroyed by " + planet.name)
+                                    pass
+                            else:
+                                force = self.mass * planet.mass / (distance ** 2)
+                                ax = dx / distance * force
+                                ay = dy / distance * force
+                                self.vx += ax / 5
+                                self.vy += ay / 5
+                        else:
+                            objects.remove(self)
+                            self.circle.delete()
+                            print("Planet " + self.name + " has been destroyed by " + planet.name)
+                            pass
             # update position
-            self.x += self.vx * (velocityMultiplierslider.get() / 15)
-            self.y += self.vy * (velocityMultiplierslider.get() / 15)
+            self.x += self.vx * (velocityMultiplierslider.get() / 100)
+            self.y += self.vy * (velocityMultiplierslider.get() / 100)
             self.circle.x = self.x
             self.circle.y = self.y
 
@@ -380,6 +398,7 @@ while running:
                     
         for planet in temp_object_list:
             objects.remove(planet)
+            planet.circle.delete()
 
         exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
@@ -414,18 +433,3 @@ while running:
             resume()
             window.flip()
             symbol = key.R
-        
-
-         
-
-
-     
-
-
-   
-        
-    
-
-   
-
-    
