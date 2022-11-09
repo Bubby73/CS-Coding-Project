@@ -4,7 +4,6 @@ import pyglet
 import math
 import random
 from pyglet import clock 
-
 # window setup
 window = pyglet.window.Window(1200, 600, vsync=0)
 window.set_caption("View Window")
@@ -20,70 +19,49 @@ planet_image.anchor_x = planet_image.width // 2 ##this line is new
 planet_image.anchor_y = planet_image.height // 2 ## and this line also
 batch = pyglet.graphics.Batch()
 #vsync=0 in the window class
-#G = 6.67408 * 10**-11
-G = 1
-
 # setup tkinter interface
 nameLabel = Label(root, text="Object Name:")
 nameLabel.grid(row=0, column=0)
-
 nameEntry = Entry(root, width = 8, relief=FLAT)
 nameEntry.grid(row=0, column=1)
-
 varName = IntVar()
 nameCheckbox = Checkbutton(root, text="Randomise Name", variable=varName)
 nameCheckbox.grid(row=0, column=2)
-
 radiusLabel = Label(root, text="Radius:")
 radiusLabel.grid(row=1, column=0)
-
 radiusEntry = Entry(root, width = 8, relief=FLAT)
 radiusEntry.grid(row=1, column=1)
-
 varRad = IntVar()
 radiusCheckbox = Checkbutton(root, text="Randomise Radius", variable=varRad)
 radiusCheckbox.grid(row=1, column=2)
-
 directionLabel = Label(root, text="Direction:")
 directionLabel.grid(row=2, column=0)
-
 directionEntry = Entry(root, width = 8, relief=FLAT)
 directionEntry.grid(row=2, column=1)
-
 varDirection = IntVar()
 dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=varDirection)
 dirCheckbox.grid(row=2, column=2)
-
 velocityLabel = Label(root, text="Velocity:")
 velocityLabel.grid(row=3, column=0)
-
 velocityEntry = Entry(root, width = 8, relief=FLAT)
 velocityEntry.grid(row=3, column=1)
-
 varVelocity = IntVar()
 velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=varVelocity)
 velCheckbox.grid(row=3, column=2)
-
 xcoordLabel = Label(root, text="X Coordinate:")
 xcoordLabel.grid(row=4, column=0)
-
 xcoordEntry = Entry(root, width = 8, relief=FLAT)
 xcoordEntry.grid(row=4, column=1)
-
 varXcoord = IntVar()
 xCheckbox = Checkbutton(root, text="Randomise X coord", variable=varXcoord)
 xCheckbox.grid(row=4, column=2)
-
 ycoordLabel = Label(root, text="Y Coordinate:")
 ycoordLabel.grid(row=5, column=0)
-
 ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
-
 varYcoord = IntVar()
 yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=varYcoord)
 yCheckbox.grid(row=5, column=2)
-
 varAll = IntVar()
 allCheckbox = Checkbutton(root, text="Randomise All", variable=varAll)
 allCheckbox.grid(row=5, column=3)
@@ -95,17 +73,14 @@ currentPlanetLabel.grid(row=7, column=0)
 currentPlanets = ""
 currentPlanetslabel = Label(root, text = currentPlanets)
 currentPlanetslabel.grid(row=8, column=0)
-
 planetDeletelabel = Label(root, text="Delete Planet:")
 planetDeletelabel.grid(row=6, column=2)
 planetDeleteEntry = Entry(root, width = 15, relief=FLAT)
 planetDeleteEntry.grid(row=6, column=3)
-
 velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
 velocityMultiplierlabel.grid(row=0, column=3)
 velocityMultiplierslider = Scale(root, from_=-15, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
-
 # set slider to 5
 velocityMultiplierslider.set(0)
 
@@ -113,13 +88,10 @@ generateMultiplierlabel = Label(root, text="Generate Multiplier:")
 generateMultiplierlabel.grid(row=2, column=3)
 generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
 generateMultiplierslider.grid(row=3, column=3)
-
 staticVar = IntVar()
 static = Checkbutton(root, text="Star", variable=staticVar)
 static.grid(row=4, column=3)
-
 planetDensity = 20
-
 # new planet class
 class Planet():
     def __init__(self, name, x, y, radius, direction, velocity, static):
@@ -139,45 +111,28 @@ class Planet():
         self.circle.scale = self.radius
         self.circle.color = self.colour
         
-
     # updates the position of the planet
     def update(self):
         if self.static == False:
             # give planets gravity
             for planet in objects:
-                    if planet != self:
-                        if planet.x != self.x and planet.y != self.y:
-                            dx = planet.x - self.x
-                            dy = planet.y - self.y
-                            distance = math.sqrt(dx ** 2 + dy ** 2)
-                            if (distance / 100) < planet.radius + self.radius:
-                                if self.radius > planet.radius: # delete the smaller planet
-                                    objects.remove(planet)
-                                    planet.circle.delete()
-                                    print("Planet " + planet.name + " has been destroyed by " + self.name)
-                                    
-                                else:
-                                    objects.remove(self)
-                                    self.circle.delete()
-                                    print("Planet " + self.name + " has been destroyed by " + planet.name)
-                                    
-                            else:
-                                force = (G * self.mass * planet.mass) / (distance ** 2)
-                                ax = dx / distance * force
-                                ay = dy / distance * force
-                                self.vx += ax / 5
-                                self.vy += ay / 5
-                        else:
-                            objects.remove(self)
-                            self.circle.delete()
-                            print("Planet " + self.name + " has been destroyed by " + planet.name)
-                            
+                if planet != self:
+                    dx = planet.x - self.x
+                    dy = planet.y - self.y
+                    distance = math.sqrt(dx ** 2 + dy ** 2)
+                    force = self.mass * planet.mass / (distance ** 2)
+                    ax = dx / distance * force
+                    ay = dy / distance * force
+                    self.vx += ax / 5
+                    self.vy += ay / 5
             # update position
-            self.x += self.vx * (velocityMultiplierslider.get() / 100)
-            self.y += self.vy * (velocityMultiplierslider.get() / 100)
+            self.x += self.vx * (velocityMultiplierslider.get() / 15)
+            self.y += self.vy * (velocityMultiplierslider.get() / 15)
             self.circle.x = self.x
             self.circle.y = self.y
 
+        else:
+            pass
 class staticPlanet():
     def __init__(self, x, y, radius, static):
         self.name = "Sun"
@@ -194,10 +149,8 @@ class staticPlanet():
         
     def draw(self):
         self.circle.draw()
-
 # random planet names      
 planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon"]
-
 # new planet
 def new_planet():
     if staticVar.get() == 1:
@@ -293,7 +246,6 @@ def new_planet():
         ycoordEntry.insert(0, y)
         objects.append(planet)
         
-
 # delete planet
 def deletePlanet():
     planetTodelete = planetDeleteEntry.get()
@@ -315,12 +267,11 @@ def clearAll():
         print(planetName + " deleted")
         print("cleared")
     objects.clear()
-    
-        
+
+
 
 running = True
 paused = False
-
 # pause procedure
 def pause():
     global paused
@@ -332,7 +283,6 @@ def pause():
     pausedLabel.batch = None
     window.flip()
     print("Paused")
-
 # resume procedure
 def resume():
     global paused
@@ -342,27 +292,19 @@ def resume():
     pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
     window.flip()
     print("Resumed")
-
 # all buttons
-
 # pause button
 pauseButton = Button(root, text="Pause", command=pause) # pause button
 pauseButton.grid(row=6, column=1)
-
 # new planet button
 generateButton = Button(root, text="Generate", command=new_planet)
 generateButton.grid(row=6, column=0)
-
 # delete planet button
 planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
 planetDeletebutton.grid(row=7, column=3)
-
 # clear all button
 clearAllbutton = Button(root, text="Clear All", command=clearAll)
 clearAllbutton.grid(row=7, column=2)
-
-
-
  # main loop
 while running:
     dt = clock.tick()
@@ -381,11 +323,9 @@ while running:
                 if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
                     temp_object_list.append(planet)
                     
-
                 else:
                     planet.update()
      
-
         batch.draw()
         # add planets to current planets label in tkinter window
         currentPlanets = ""
@@ -395,8 +335,6 @@ while running:
                     
         for planet in temp_object_list:
             objects.remove(planet)
-            planet.circle.delete()
-
         exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
         currentPlanets = ""
@@ -407,8 +345,6 @@ while running:
     # increase window size when more planets being displayed  
     screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects))
     root.geometry(screen_resolution)
-
-
     # detect if a key is pressed
     @window.event()
     def on_key_press(symbol, modifiers):
@@ -425,8 +361,10 @@ while running:
             window.flip()
             # temporarily set symbol to not P to prevent infinite loop
             symbol = key.R
-
         if symbol == key.P and paused == True:
             resume()
             window.flip()
             symbol = key.R
+        
+         
+     
