@@ -156,10 +156,18 @@ class Planet():
                                 print("Planet " + planet.name + " has been destroyed by " + self.name)
                                 
                                 
-                            else:
+                            elif self.radius < planet.radius:
                                 objects.remove(self)
                                 self.circle.delete()
                                 print("Planet " + self.name + " has been destroyed by " + planet.name)
+                                return
+                            
+                            else:
+                                objects.remove(self)
+                                self.circle.delete()
+                                objects.remove(planet)
+                                planet.circle.delete()
+                                print(self.name + " and " + planet.name + " have collided")
                                 return
                                 
                         else:
