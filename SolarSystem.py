@@ -92,7 +92,7 @@ varAll.set(1)
 
 currentPlanetLabel = Label(root, text="Current Planets:")
 currentPlanetLabel.grid(row=7, column=0)
-currentPlanets = ""
+currentPlanets = "0"
 currentPlanetslabel = Label(root, text = currentPlanets)
 currentPlanetslabel.grid(row=8, column=0)
 
