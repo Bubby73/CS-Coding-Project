@@ -318,10 +318,9 @@ def clearAll():
     for planet in objects:
         planet.circle.delete()
         planetName = planet.name
-        print(planetName + " deleted")
-        print("cleared")
+        print(planetName + " deleted") 
     objects.clear()
-    
+    print("cleared")
         
 
 running = True
@@ -402,6 +401,7 @@ while running:
         for planet in temp_object_list:
             objects.remove(planet)
             planet.circle.delete()
+            print(planet.name + " left the screen and was deleted")
 
         exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
@@ -436,3 +436,10 @@ while running:
             resume()
             window.flip()
             symbol = key.R
+
+
+
+
+
+# make exe file
+# pyinstaller --onefile -w SolarSystem.py    
