@@ -111,14 +111,14 @@ velocityMultiplierslider.set(1)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:")
 generateMultiplierlabel.grid(row=2, column=3)
-generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
+generateMultiplierslider = Scale(root, from_=1, to=1000, orient=HORIZONTAL, length=100)
 generateMultiplierslider.grid(row=3, column=3)
 
 staticVar = IntVar()
 static = Checkbutton(root, text="Star", variable=staticVar)
 static.grid(row=4, column=3)
 
-planetDensity = 20
+planetDensity = 50
 
 # new planet class
 class Planet():
@@ -146,7 +146,7 @@ class Planet():
             # give planets gravity
             for planet in objects:
                     if planet != self:
-                        dx = planet.x - self.x
+                        dx = planet.x - self.x 
                         dy = planet.y - self.y
                         distance = math.sqrt(dx ** 2 + dy ** 2)
                         if (distance / 100) < planet.radius + self.radius:
@@ -175,12 +175,12 @@ class Planet():
                             ax = dx / distance * force
                             ay = dy / distance * force
                             self.vx += ax / 5
-                            self.vy += ay / 5
+                            self.vy += ay / 5 
              
                             
             # update position
-            self.x += self.vx * (velocityMultiplierslider.get() / 50)
-            self.y += self.vy * (velocityMultiplierslider.get() / 50)
+            self.x += self.vx * (velocityMultiplierslider.get() / 100) 
+            self.y += self.vy * (velocityMultiplierslider.get() / 100) 
             self.circle.x = self.x
             self.circle.y = self.y
 
@@ -329,12 +329,9 @@ paused = False
 # pause procedure
 def pause():
     global paused
-    global pausedLabel
     paused = True
     pauseButton.config(text="Resume")
     pauseButton.config(command=resume)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
-    pausedLabel.batch = None
     window.flip()
     print("Paused")
 
@@ -344,7 +341,6 @@ def resume():
     paused = False
     pauseButton.config(text="Pause")
     pauseButton.config(command=pause)
-    pausedLabel = pyglet.text.Label("Paused", font_name='Times New Roman', font_size=16, x = 30, y=570, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch = batch)
     window.flip()
     print("Resumed")
 
@@ -366,11 +362,10 @@ planetDeletebutton.grid(row=7, column=3)
 clearAllbutton = Button(root, text="Clear All", command=clearAll)
 clearAllbutton.grid(row=7, column=2)
 
-
+pausedText = ""
 
  # main loop
 while running:
-    dt = clock.tick()
     #show fps
     fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     window.switch_to()
@@ -409,7 +404,7 @@ while running:
         for planet in objects:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
-        
+                
     # increase window size when more planets being displayed  
     screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects))
     root.geometry(screen_resolution)
