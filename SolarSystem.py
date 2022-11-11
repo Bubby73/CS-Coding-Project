@@ -111,7 +111,7 @@ velocityMultiplierslider.set(1)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:")
 generateMultiplierlabel.grid(row=2, column=3)
-generateMultiplierslider = Scale(root, from_=1, to=1000, orient=HORIZONTAL, length=100)
+generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
 generateMultiplierslider.grid(row=3, column=3)
 
 staticVar = IntVar()
@@ -213,7 +213,6 @@ def new_planet():
     for i in range(generateMultiplierslider.get()):
         if varAll.get() == 1:
             name = random.choice(planetNamelist)
-            radius = random.randint(1, 10)
             direction = random.randint(0, 360)
             velocity = random.randint(1,5)
             x = random.randint(100, 1100)
@@ -240,7 +239,10 @@ def new_planet():
                     name = nameEntry.get()
                     nameEntry.config(bg = "white")
             if varRad.get() == 1:
-                radius = random.randint(1, 10)
+                if static == True:
+                    radius = random.randint(6, 12)
+                else:
+                    radius = random.randint(1, 5)
             else:
                 try:
                     radius = float(radiusEntry.get())
@@ -366,6 +368,7 @@ pausedText = ""
 
  # main loop
 while running:
+    clock.tick()
     #show fps
     fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     window.switch_to()
