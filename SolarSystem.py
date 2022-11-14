@@ -15,7 +15,7 @@ root.title("Control Panel")
 xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
-planet_image = pyglet.image.load("planet.png")
+planet_image = pyglet.image.load("testplanet.png")
 planet_image.anchor_x = planet_image.width // 2 ##this line is new
 planet_image.anchor_y = planet_image.height // 2 ## and this line also
 batch = pyglet.graphics.Batch()
@@ -217,6 +217,10 @@ def new_planet():
             velocity = random.randint(1,5)
             x = random.randint(100, 1100)
             y = random.randint(100, 500)
+            if static == True:
+                radius = random.randint(6, 12)
+            else:
+                radius = random.randint(1, 5)
             nameEntry.config(bg = "white")
             nameCheckbox.select()
             radiusEntry.config(bg = "white")
