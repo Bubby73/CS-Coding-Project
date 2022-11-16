@@ -154,12 +154,28 @@ class Planet():
                                 objects.remove(planet)
                                 planet.circle.delete()
                                 print("Planet " + planet.name + " has been destroyed by " + self.name)
+                                # add attributes
+                                self.vx += planet.vx
+                                self.vy += planet.vy
+                                self.mass += planet.mass
+                                self.radius += planet.radius / 2
+                                self.circle.scale = self.radius # update circle
+                                self.velocity = math.sqrt(self.vx ** 2 + self.vy ** 2)
+                                self.direction = math.degrees(math.atan2(self.vx, self.vy))
                                 
                                 
                             elif self.radius < planet.radius:
                                 objects.remove(self)
                                 self.circle.delete()
                                 print("Planet " + self.name + " has been destroyed by " + planet.name)
+                                # add attributes
+                                planet.vx += self.vx
+                                planet.vy += self.vy
+                                planet.mass += self.mass
+                                planet.radius += self.radius / 2
+                                planet.circle.scale = planet.radius # update circle
+                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2)
+                                planet.direction = math.degrees(math.atan2(planet.vx, planet.vy))
                                 return
                             
                             else:
