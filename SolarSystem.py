@@ -133,7 +133,7 @@ class Planet():
         self.direction = direction
         self.velocity = velocity 
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
-        self.vy = math.cos(math.radians(self.direction)) * self.velocity
+        self.vy = math.cos(math.radians(self.direction))* self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
         self.circle.scale = self.radius
@@ -162,28 +162,23 @@ class Planet():
                                 self.circle.scale = self.radius # update circle
                                 self.velocity = math.sqrt(self.vx ** 2 + self.vy ** 2)
                                 self.direction = math.degrees(math.atan2(self.vx, self.vy))
+                                print(self.radius)
                                 
-                                
-                            elif self.radius < planet.radius:
+                            else:
                                 objects.remove(self)
                                 self.circle.delete()
                                 print("Planet " + self.name + " has been destroyed by " + planet.name)
-                                # add attributes
-                                planet.vx += self.vx
+                                print(planet.vx)
+                                print(self.vx)
+                                print(planet.vy)
+                                print(self.vy)
+                                planet.vx += self.vx # add attributes 
                                 planet.vy += self.vy
                                 planet.mass += self.mass
                                 planet.radius += self.radius / 2
                                 planet.circle.scale = planet.radius # update circle
-                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2)
+                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2) #mkae velocity added proportional 2 mass
                                 planet.direction = math.degrees(math.atan2(planet.vx, planet.vy))
-                                return
-                            
-                            else:
-                                objects.remove(self)
-                                self.circle.delete()
-                                objects.remove(planet)
-                                planet.circle.delete()
-                                print(self.name + " and " + planet.name + " have collided")
                                 return
                                 
                         else:
@@ -343,7 +338,7 @@ def clearAll():
         print(planetName + " deleted") 
     objects.clear()
     print("cleared")
-        
+    
 
 running = True
 paused = False
@@ -399,14 +394,14 @@ while running:
         window.flip()
         window.clear()
         temp_object_list = []
-        for planet in objects: # updates the position of each planet
+        for planet in objects: # updates the position of each planet2
             if planet.static == False:
                 if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
                     temp_object_list.append(planet)
                     
 
                 else:
-                    planet.update()
+                    planet.update() 
      
 
         batch.draw()
@@ -435,7 +430,7 @@ while running:
 
     # detect if a key is pressed
     @window.event()
-    def on_key_press(symbol, modifiers):
+    def on_key_press(symbol):
         global running
         global paused
         
@@ -448,14 +443,12 @@ while running:
             pause()
             window.flip()
             # temporarily set symbol to not P to prevent infinite loop
-            symbol = key.R
+            symbol = None
 
         if symbol == key.P and paused == True:
             resume()
             window.flip()
-            symbol = key.R
-
-
+            symbol = None
 
 
 
