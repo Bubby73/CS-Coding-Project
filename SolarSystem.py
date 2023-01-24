@@ -16,8 +16,8 @@ xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 planet_image = pyglet.image.load("testplanet.png")
-planet_image.anchor_x = planet_image.width // 2 ##this line is new
-planet_image.anchor_y = planet_image.height // 2 ## and this line also
+planet_image.anchor_x = planet_image.width // 2 # this line is new
+planet_image.anchor_y = planet_image.height // 2 # and this line also
 batch = pyglet.graphics.Batch()
 #vsync=0 in the window class
 #G = 6.67408 * 10**-11
@@ -177,7 +177,7 @@ class Planet():
                                 planet.mass += self.mass
                                 planet.radius += self.radius / 2
                                 planet.circle.scale = planet.radius # update circle
-                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2) #mkae velocity added proportional 2 mass
+                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2) # make velocity added proportional 2 mass
                                 planet.direction = math.degrees(math.atan2(planet.vx, planet.vy))
                                 return
                                 
@@ -394,9 +394,9 @@ while running:
         window.flip()
         window.clear()
         temp_object_list = []
-        for planet in objects: # updates the position of each planet2
+        for planet in objects: # updates the position of each planet
             if planet.static == False:
-                if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
+                if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet off screen, delete
                     temp_object_list.append(planet)
                     
 
@@ -414,8 +414,9 @@ while running:
         for planet in temp_object_list:
             objects.remove(planet)
             planet.circle.delete()
-            print(planet.name + " left the screen and was deleted")
+            print(planet.name + " left the screen and was deleted") # delete planet if off screen
 
+        # add exit label
         exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
         currentPlanets = ""
@@ -430,7 +431,7 @@ while running:
 
     # detect if a key is pressed
     @window.event()
-    def on_key_press(symbol):
+    def on_key_press(symbol, modifiers):
         global running
         global paused
         
