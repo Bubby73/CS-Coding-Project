@@ -7,7 +7,7 @@ from pyglet import clock
 import csv
 
 # window setup
-window = pyglet.window.Window(1200, 600)
+window = pyglet.window.Window(1200, 600, vsync=0)
 window.set_caption("View Window")
 key = pyglet.window.key
 objects = []
@@ -133,7 +133,7 @@ class Planet():
         self.direction = direction
         self.velocity = velocity 
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
-        self.vy = math.cos(math.radians(self.direction)) * self.velocity
+        self.vy = math.cos(math.radians(self.direction))* self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
         self.circle.scale = self.radius
@@ -154,20 +154,31 @@ class Planet():
                                 objects.remove(planet)
                                 planet.circle.delete()
                                 print("Planet " + planet.name + " has been destroyed by " + self.name)
+                                # add attributes
+                                self.vx += planet.vx
+                                self.vy += planet.vy
+                                self.mass += planet.mass
+                                self.radius += planet.radius / 2
+                                self.circle.scale = self.radius # update circle
+                                self.velocity = math.sqrt(self.vx ** 2 + self.vy ** 2)
+                                self.direction = math.degrees(math.atan2(self.vx, self.vy))
+                                print(self.radius)
                                 
-                                
-                            elif self.radius < planet.radius:
-                                objects.remove(self)
-                                self.circle.delete()
-                                print("Planet " + self.name + " has been destroyed by " + planet.name)
-                                return
-                            
                             else:
                                 objects.remove(self)
                                 self.circle.delete()
-                                objects.remove(planet)
-                                planet.circle.delete()
-                                print(self.name + " and " + planet.name + " have collided")
+                                print("Planet " + self.name + " has been destroyed by " + planet.name)
+                                print(planet.vx)
+                                print(self.vx)
+                                print(planet.vy)
+                                print(self.vy)
+                                planet.vx += self.vx # add attributes 
+                                planet.vy += self.vy
+                                planet.mass += self.mass
+                                planet.radius += self.radius / 2
+                                planet.circle.scale = planet.radius # update circle
+                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2) # make velocity added proportional 2 mass
+                                planet.direction = math.degrees(math.atan2(planet.vx, planet.vy))
                                 return
                                 
                         else:
@@ -327,7 +338,7 @@ def clearAll():
         print(planetName + " deleted") 
     objects.clear()
     print("cleared")
-        
+    
 
 running = True
 paused = False
@@ -386,7 +397,7 @@ while running:
         temp_object_list = []
         for planet in objects: # updates the position of each planet
             if planet.static == False:
-                if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet of screen, delete
+                if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if planet off screen, delete
                     temp_object_list.append(planet)
                     
 
@@ -395,7 +406,7 @@ while running:
 
         batch.draw()
         # add planets to current planets label in tkinter window
-        currentPlanets = ""
+        currentPlanets = ""`
         for planet in objects:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
@@ -403,8 +414,9 @@ while running:
         for planet in temp_object_list:
             objects.remove(planet)
             planet.circle.delete()
-            print(planet.name + " left the screen and was deleted")
+            print(planet.name + " left the screen and was deleted") # delete planet if off screen
 
+        # add exit label
         exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     else:
         currentPlanets = ""
@@ -432,14 +444,12 @@ while running:
             pause()
             window.flip()
             # temporarily set symbol to not P to prevent infinite loop
-            symbol = key.R
+            symbol = None
 
         if symbol == key.P and paused == True:
             resume()
             window.flip()
-            symbol = key.R
-
-
+            symbol = None
 
 
 
