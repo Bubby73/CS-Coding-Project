@@ -4,9 +4,10 @@ import pyglet
 import math
 import random
 from pyglet import clock 
+import csv
 
 # window setup
-window = pyglet.window.Window(1200, 600, vsync=0)
+window = pyglet.window.Window(1200, 600)
 window.set_caption("View Window")
 key = pyglet.window.key
 objects = []
@@ -16,10 +17,9 @@ xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 planet_image = pyglet.image.load("testplanet.png")
-planet_image.anchor_x = planet_image.width // 2 ##this line is new
-planet_image.anchor_y = planet_image.height // 2 ## and this line also
+planet_image.anchor_x = planet_image.width // 2 # set the anchor to the center of the image
+planet_image.anchor_y = planet_image.height // 2 
 batch = pyglet.graphics.Batch()
-#vsync=0 in the window class
 #G = 6.67408 * 10**-11
 G = 1
 
@@ -138,7 +138,7 @@ class Planet():
         self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
         self.circle.scale = self.radius
         self.circle.color = self.colour
-        
+    
 
     # updates the position of the planet
     def update(self):
@@ -368,6 +368,7 @@ planetDeletebutton.grid(row=7, column=3)
 clearAllbutton = Button(root, text="Clear All", command=clearAll)
 clearAllbutton.grid(row=7, column=2)
 
+
 pausedText = ""
 
  # main loop
@@ -391,7 +392,6 @@ while running:
 
                 else:
                     planet.update()
-     
 
         batch.draw()
         # add planets to current planets label in tkinter window
