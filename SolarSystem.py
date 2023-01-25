@@ -16,10 +16,11 @@ xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
 planet_image = pyglet.image.load("testplanet.png")
-planet_image.anchor_x = planet_image.width // 2 # this line is new
-planet_image.anchor_y = planet_image.height // 2 # and this line also
-batch = pyglet.graphics.Batch()
-#vsync=0 in the window class
+# set the anchor to the center of the image
+planet_image.anchor_x = planet_image.width // 2 
+planet_image.anchor_y = planet_image.height // 2 
+batch = pyglet.graphics.Batch() # create a new batch
+
 #G = 6.67408 * 10**-11
 G = 1
 
@@ -406,7 +407,7 @@ while running:
 
         batch.draw()
         # add planets to current planets label in tkinter window
-        currentPlanets = ""
+        currentPlanets = ""`
         for planet in objects:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
