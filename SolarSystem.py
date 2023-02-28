@@ -8,7 +8,7 @@ import csv
 
 # window setup
 window = pyglet.window.Window(1200, 600, vsync=0)
-window.set_caption("View Window")
+window.set_caption("Main Window")
 key = pyglet.window.key
 objects = []
 root = Tk()
@@ -16,7 +16,7 @@ root.title("Control Panel")
 xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
-planet_image = pyglet.image.load("testplanet.png")
+planet_image = pyglet.image.load("testplanet.png") # load the image
 planet_image.anchor_x = planet_image.width // 2 # set the anchor to the center of the image
 planet_image.anchor_y = planet_image.height // 2 
 batch = pyglet.graphics.Batch()
@@ -30,8 +30,8 @@ nameLabel.grid(row=0, column=0)
 nameEntry = Entry(root, width = 8, relief=FLAT)
 nameEntry.grid(row=0, column=1)
 
-varName = IntVar()
-nameCheckbox = Checkbutton(root, text="Randomise Name", variable=varName)
+ranName = IntVar()
+nameCheckbox = Checkbutton(root, text="Randomise Name", variable=ranName)
 nameCheckbox.grid(row=0, column=2)
 
 radiusLabel = Label(root, text="Radius:")
@@ -40,8 +40,8 @@ radiusLabel.grid(row=1, column=0)
 radiusEntry = Entry(root, width = 8, relief=FLAT)
 radiusEntry.grid(row=1, column=1)
 
-varRad = IntVar()
-radiusCheckbox = Checkbutton(root, text="Randomise Radius", variable=varRad)
+ranRad = IntVar()
+radiusCheckbox = Checkbutton(root, text="Randomise Radius", variable=ranRad)
 radiusCheckbox.grid(row=1, column=2)
 
 directionLabel = Label(root, text="Direction:")
@@ -50,8 +50,8 @@ directionLabel.grid(row=2, column=0)
 directionEntry = Entry(root, width = 8, relief=FLAT)
 directionEntry.grid(row=2, column=1)
 
-varDirection = IntVar()
-dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=varDirection)
+ranDirection = IntVar()
+dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=ranDirection)
 dirCheckbox.grid(row=2, column=2)
 
 velocityLabel = Label(root, text="Velocity:")
@@ -60,8 +60,8 @@ velocityLabel.grid(row=3, column=0)
 velocityEntry = Entry(root, width = 8, relief=FLAT)
 velocityEntry.grid(row=3, column=1)
 
-varVelocity = IntVar()
-velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=varVelocity)
+ranVelocity = IntVar()
+velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=ranVelocity)
 velCheckbox.grid(row=3, column=2)
 
 xcoordLabel = Label(root, text="X Coordinate:")
@@ -70,8 +70,8 @@ xcoordLabel.grid(row=4, column=0)
 xcoordEntry = Entry(root, width = 8, relief=FLAT)
 xcoordEntry.grid(row=4, column=1)
 
-varXcoord = IntVar()
-xCheckbox = Checkbutton(root, text="Randomise X coord", variable=varXcoord)
+ranXcoord = IntVar()
+xCheckbox = Checkbutton(root, text="Randomise X coord", variable=ranXcoord)
 xCheckbox.grid(row=4, column=2)
 
 ycoordLabel = Label(root, text="Y Coordinate:")
@@ -80,15 +80,15 @@ ycoordLabel.grid(row=5, column=0)
 ycoordEntry = Entry(root, width = 8, relief=FLAT)
 ycoordEntry.grid(row=5, column=1)
 
-varYcoord = IntVar()
-yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=varYcoord)
+ranYcoord = IntVar()
+yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=ranYcoord)
 yCheckbox.grid(row=5, column=2)
 
-varAll = IntVar()
-allCheckbox = Checkbutton(root, text="Randomise All", variable=varAll)
+ranAll = IntVar()
+allCheckbox = Checkbutton(root, text="Randomise All", variable=ranAll)
 allCheckbox.grid(row=5, column=3)
 
-varAll.set(1)
+ranAll.set(1)
 
 currentPlanetLabel = Label(root, text="Current Planets:")
 currentPlanetLabel.grid(row=7, column=0)
@@ -222,7 +222,7 @@ def new_planet():
     else:
         static = False
     for i in range(generateMultiplierslider.get()):
-        if varAll.get() == 1:
+        if ranAll.get() == 1:
             name = random.choice(planetNamelist)
             direction = random.randint(0, 360)
             velocity = random.randint(1,5)
@@ -245,7 +245,7 @@ def new_planet():
             ycoordEntry.config(bg = "white")
             yCheckbox.select()
         else:
-            if varName.get() == 1:
+            if ranName.get() == 1:
                 name = random.choice(planetNamelist)
             else:
                 if nameEntry.get() == "":
@@ -253,7 +253,7 @@ def new_planet():
                 else:
                     name = nameEntry.get()
                     nameEntry.config(bg = "white")
-            if varRad.get() == 1:
+            if ranRad.get() == 1:
                 if static == True:
                     radius = random.randint(6, 12)
                 else:
@@ -264,7 +264,7 @@ def new_planet():
                     radiusEntry.config(bg = "white")
                 except:
                     radiusEntry.config(bg = "red")
-            if varDirection.get() == 1:
+            if ranDirection.get() == 1:
                 direction = random.randint(0, 360)
             else:
                 try:
@@ -272,7 +272,7 @@ def new_planet():
                     directionEntry.config(bg = "white")
                 except:
                     directionEntry.config(bg = "red")
-            if varVelocity.get() == 1:
+            if ranVelocity.get() == 1:
                 velocity = random.randint(1, 5)
             else:
                 try:
@@ -280,7 +280,7 @@ def new_planet():
                     velocityEntry.config(bg = "white")
                 except:
                     velocityEntry.config(bg = "red")
-            if varXcoord.get() == 1:
+            if ranXcoord.get() == 1:
                 x = random.randint(100, 1100)
             else:
                 try:
@@ -288,7 +288,7 @@ def new_planet():
                     xcoordEntry.config(bg = "white")
                 except:
                     xcoordEntry.config(bg = "red")
-            if varYcoord.get() == 1:
+            if ranYcoord.get() == 1:
                 y = random.randint(100, 500)
             else:
                 try:
@@ -406,7 +406,7 @@ while running:
 
         batch.draw()
         # add planets to current planets label in tkinter window
-        currentPlanets = ""`
+        currentPlanets = ""
         for planet in objects:
             currentPlanets += planet.name + "\n"
         currentPlanetslabel.config(text = currentPlanets)
@@ -434,6 +434,7 @@ while running:
     def on_key_press(symbol, modifiers):
         global running
         global paused
+        print("key pressed")
         
         if symbol == key.ESCAPE:
             running = False
