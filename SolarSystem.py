@@ -1,10 +1,7 @@
 # import libraries
 from tkinter import *
-import pyglet
-import math
-import random
+import pyglet, math, random, csv # import libraries
 from pyglet import clock 
-import csv
 
 # window setup
 window = pyglet.window.Window(1200, 600, vsync=0)
@@ -22,6 +19,9 @@ planet_image.anchor_y = planet_image.height // 2
 batch = pyglet.graphics.Batch()
 #G = 6.67408 * 10**-11
 G = 1
+
+running = True
+paused = False
 
 # setup tkinter interface
 nameLabel = Label(root, text="Object Name:")
@@ -340,9 +340,6 @@ def clearAll():
     print("cleared")
     
 
-running = True
-paused = False
-
 # pause procedure
 def pause():
     global paused
@@ -382,15 +379,19 @@ clearAllbutton.grid(row=7, column=2)
 
 pausedText = ""
 
+def on_closing():
+    global running
+    running = False
+root.protocol("WM_DELETE_WINDOW", on_closing) # detect when the secondary window is closed
+
  # main loop
 while running:
     clock.tick()
     #show fps
     fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
-    exitLabel = pyglet.text.Label("Press ESC to exit or P to pause", font_name='Times New Roman', font_size=12, x=1100, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     window.switch_to()
     window.dispatch_events()
-    root.update()
     currentPlanetLabel.config(text = "Current Planets: " + str(len(objects)))
     if not paused:
         window.flip()
@@ -428,6 +429,7 @@ while running:
     screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects))
     root.geometry(screen_resolution)
 
+    root.update()
 
     # detect if a key is pressed
     @window.event()
