@@ -120,13 +120,14 @@ static.grid(row=4, column=3)
 
 planetDensity = 50
 
+scalar = 100
 # new planet class
 class Planet():
     def __init__(self, name, x, y, radius, direction, velocity, static):
         global planetDensity
         self.name = name
-        self.radius = radius / 100
-        self.mass = radius * planetDensity  
+        self.radius = radius / scalar
+        self.mass = radius 
         self.x = x 
         self.y = y 
         self.static = static

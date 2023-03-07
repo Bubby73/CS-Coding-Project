@@ -20,7 +20,7 @@ class Planet():
         global planetDensity
         self.name = name
         self.radius = radius / 100
-        self.mass = radius * planetDensity  
+        self.mass = radius 
         self.x = x 
         self.y = y 
         self.static = static
@@ -29,7 +29,7 @@ class Planet():
         self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
         self.vy = math.cos(math.radians(self.direction))* self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
+        self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.colour)
         self.circle.scale = self.radius
         self.circle.color = self.colour
 
