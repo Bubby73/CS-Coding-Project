@@ -1,36 +1,25 @@
-import pygame
-import math
+import pyglet # import pyglet library
+key = pyglet.window.key # import key constants
 
-# Set up the display
-pygame.init()
-width, height = 640, 480
-screen = pygame.display.set_mode((width, height))
 
-# Set up the colors
-black = (0, 0, 0)
-white = (255, 255, 255)
+window = pyglet.window.Window(1200, 600) # create the window
+window.set_caption("View Window") # set the window caption
 
-# Set up the simulation variables
-G = 6.67430e-11 # Gravitational constant
-AU = (149.6e6 * 1000) # Astronomical unit in meters
 
-scale = 250 / AU
+running = True
 
-class Body:
-    def __init__(self, name, mass, x_pos, y_pos):
-        self.name = name
-        self.mass = mass
-        self.x_pos = x_pos * scale + width/2 # Scale and center on screen
-        self.y_pos = y_pos * scale + height/2 # Scale and center on screen
-        
-    def attraction(self, other):
-        dx = (self.x_pos - other.x_pos)
-        dy = (self.y_pos - other.y_pos)
-        d_squared = dx**2 + dy**2
-        
-        force_magnitude = G * self.mass * other.mass / d_squared
-        
-        theta = math.atan2(dy,dx)
-        
-        force_x_component = math.cos(theta) * force_magnitude
-        force_y_component
+
+while running: # main loop  
+    window.switch_to()
+    window.dispatch_events() 
+    window.flip()
+    window.clear() # clear the window at the end of each frame
+
+
+    @window.event() # event handler
+    def on_key_press(symbol, modifiers):
+        global running
+       
+        if symbol == key.ESCAPE:
+            running = False # stop the main loop
+            window.close() # close the window
