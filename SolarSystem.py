@@ -1,7 +1,7 @@
 # import libraries
 from tkinter import *
 import pyglet, math, random, csv # import libraries
-from pyglet import clock 
+#from pyglet import clock 
 
 # window setup
 window = pyglet.window.Window(1200, 600, vsync=0)
@@ -13,7 +13,7 @@ root.title("Control Panel")
 xwidth, yheight = 400, 250
 screen_resolution = str(xwidth)+'x'+str(yheight)
 root.geometry(screen_resolution)
-planet_image = pyglet.image.load("testplanet.png") # load the image
+planet_image = pyglet.image.load("planet.png") # load the image
 planet_image.anchor_x = planet_image.width // 2 # set the anchor to the center of the image
 planet_image.anchor_y = planet_image.height // 2 
 batch = pyglet.graphics.Batch()
@@ -387,9 +387,9 @@ root.protocol("WM_DELETE_WINDOW", on_closing) # detect when the secondary window
 
  # main loop
 while running:
-    clock.tick()
+    pyglet.clock.tick()
     #show fps
-    fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    fpsLabel = pyglet.text.Label("FPS: " + str(round(pyglet.clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     window.switch_to()
     window.dispatch_events()
