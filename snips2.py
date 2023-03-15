@@ -2,7 +2,9 @@ import pyglet
 import math
 import random
 numObjects = 3
-window = pyglet.window.Window(1200, 600)
+pygletWindowsize = 1200, 600
+window = pyglet.window.Window(pygletWindowsize[0], pygletWindowsize[1])
+print(type(pygletWindowsize))
 
 key = pyglet.window.key
 
@@ -22,16 +24,12 @@ class Planet():
 
         self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.color)
 
-
-    def draw(self):
-        self.circle.draw()
-
     def update(self):
         self.x += self.vx
         self.y += self.vy
         self.circle.x = self.x
         self.circle.y = self.y
-        
+        self.circle.draw() # draw the planet       
             
 
 
@@ -56,14 +54,13 @@ while running == True:
     window.flip()
     
     window.clear()
-    for planet in objects:
-        if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0:
-            objects.remove(planet)
-            planet = new_planet()
-            objects.append(planet)
-            
-        planet.update()
-        planet.draw()
+    for planet in objects: # for each planet in the list
+        if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if the planet goes off the screen
+            objects.remove(planet) # remove the planet from the list 
+            planet = new_planet() # create a new planet
+            objects.append(planet) # add the new planet to the list
+        planet.update() 
+     
 
     #detect if escape key is pressed
     @window.event
