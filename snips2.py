@@ -35,9 +35,9 @@ class Planet():
 
 planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
 #new planet
-def newplanet():
-        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 1000), random.randint(0, 360), random.randint(1, 10))
-        return planet 
+def new_planet():
+        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 1000), random.randint(0, 360), random.randint(1, 5))
+        return planet
 
 numObjects = 3
 
@@ -56,7 +56,7 @@ while running == True:
     
     window.clear()
     for planet in objects: # for each planet in the list
-        if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if the planet goes off the screen
+        if planet.x > pygletWindowsize[0] or planet.x < 0 or planet.y > pygletWindowsize[1] or planet.y < 0: # if the planet goes off the screen
             objects.remove(planet) # remove the planet from the list 
             planet = newplanet() # create a new planet
             objects.append(planet) # add the new planet to the list
