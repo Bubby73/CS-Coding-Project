@@ -21,7 +21,6 @@ class Planet():
         self.vx = math.sin(math.radians(self.direction)) * self.velocity
         self.vy = math.cos(math.radians(self.direction)) * self.velocity
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
         self.circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=self.color)
 
     def update(self):
@@ -36,14 +35,16 @@ class Planet():
 
 planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
 #new planet
-def new_planet():
+def newplanet():
         planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 1000), random.randint(0, 360), random.randint(1, 10))
-        return planet
+        return planet 
 
-objects = []
+numObjects = 3
 
-for i in range(0, numObjects):
-    objects.append(new_planet())
+objects = [] # list of objects
+
+for i in range(0, numObjects): 
+    objects.append(newplanet()) # add new planet to list
 
 
 running = True
@@ -57,7 +58,7 @@ while running == True:
     for planet in objects: # for each planet in the list
         if planet.x > 1200 or planet.x < 0 or planet.y > 600 or planet.y < 0: # if the planet goes off the screen
             objects.remove(planet) # remove the planet from the list 
-            planet = new_planet() # create a new planet
+            planet = newplanet() # create a new planet
             objects.append(planet) # add the new planet to the list
         planet.update() 
      

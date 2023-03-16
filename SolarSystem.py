@@ -217,7 +217,7 @@ class staticPlanet():
 planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon"]
 
 # new planet
-def new_planet():
+def newplanet():
     if staticVar.get() == 1:
         static = True
     else:
@@ -366,7 +366,7 @@ pauseButton = Button(root, text="Pause", command=pause) # pause button
 pauseButton.grid(row=6, column=1)
 
 # new planet button
-generateButton = Button(root, text="Generate", command=new_planet)
+generateButton = Button(root, text="Generate", command=newplanet)
 generateButton.grid(row=6, column=0)
 
 # delete planet button
