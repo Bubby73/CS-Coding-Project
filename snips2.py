@@ -35,7 +35,7 @@ class Planet():
 
 planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
 #new planet
-def new_planet():
+def newplanet():
         planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 1000), random.randint(0, 360), random.randint(1, 5))
         return planet
 
