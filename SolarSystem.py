@@ -147,7 +147,7 @@ class Planet():
         if self.static == False:
             # give planets gravity
             for planet in objects:
-                    if planet != self:
+                    if planet != self and planet.static == False:
                         dx = planet.x - self.x 
                         dy = planet.y - self.y
                         distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -170,10 +170,6 @@ class Planet():
                                 objects.remove(self)
                                 self.circle.delete()
                                 print("Planet " + self.name + " has been destroyed by " + planet.name)
-                                print(planet.vx)
-                                print(self.vx)
-                                print(planet.vy)
-                                print(self.vy)
                                 planet.vx += self.vx # add attributes 
                                 planet.vy += self.vy
                                 planet.mass += self.mass
@@ -211,8 +207,7 @@ class staticPlanet():
         self.circle.scale = self.radius
         self.circle.color = self.colour
         
-    def draw(self):
-        self.circle.draw()
+
 
 # random planet names      
 planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon"]
@@ -391,7 +386,7 @@ while running:
     clock.tick()
     #show fps
     fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
-    exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
+    exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch=batch)
     window.switch_to()
     window.dispatch_events()
     currentPlanetLabel.config(text = "Current Planets: " + str(len(objects)))
