@@ -10,7 +10,7 @@ window = pyglet.window.Window(pygletWindowsize[0], pygletWindowsize[1], vsync = 
 window.set_caption("View Window") # set the window caption
 root = Tk() # create the secondary window
 root.title("Control Panel") # set the secondary window caption
-xwidth, yheight = 400, 200 # set the size of the secondary window
+xwidth, yheight = 300, 200 # set the size of the secondary window
 screen_resolution = str(xwidth)+'x'+str(yheight) # set the screen resolution
 root.geometry(screen_resolution) # set the geometry of the secondary window
 planet_image = pyglet.image.load("planet.png") # load the image
@@ -19,11 +19,50 @@ planet_image.anchor_y = planet_image.height // 2
 batch = pyglet.graphics.Batch() # create a batch object
 
 
-numPlnaetslabel = Label(root, text="Number of planets:")
-numPlnaetslider = Scale(root, from_=0, to=150, orient=HORIZONTAL, length=100)
-numPlnaetslabel.grid(row=0, column=0)
-numPlnaetslider.grid(row=0, column=1)
-numPlnaetslider.set(0) # set the starting value of the slider to 0
+# setup tkinter interface
+nameLabel = Label(root, text="Object Name:")
+nameLabel.grid(row=0, column=0)
+
+nameEntry = Entry(root, width = 8, relief=FLAT)
+nameEntry.grid(row=0, column=1)
+
+radiusLabel = Label(root, text="Radius:")
+radiusLabel.grid(row=1, column=0)
+
+radiusEntry = Entry(root, width = 8, relief=FLAT)
+radiusEntry.grid(row=1, column=1)
+
+directionLabel = Label(root, text="Direction:")
+directionLabel.grid(row=2, column=0)
+
+directionEntry = Entry(root, width = 8, relief=FLAT)
+directionEntry.grid(row=2, column=1)
+
+velocityLabel = Label(root, text="Velocity:")
+velocityLabel.grid(row=3, column=0)
+
+velocityEntry = Entry(root, width = 8, relief=FLAT)
+velocityEntry.grid(row=3, column=1)
+
+xcoordLabel = Label(root, text="X Coordinate:")
+xcoordLabel.grid(row=4, column=0)
+
+xcoordEntry = Entry(root, width = 8, relief=FLAT)
+xcoordEntry.grid(row=4, column=1)
+
+ycoordLabel = Label(root, text="Y Coordinate:")
+ycoordLabel.grid(row=5, column=0)
+
+ycoordEntry = Entry(root, width = 8, relief=FLAT)
+ycoordEntry.grid(row=5, column=1)
+
+ranAll = IntVar()
+allCheckbox = Checkbutton(root, text="Randomise All", variable=ranAll)
+allCheckbox.grid(row=5, column=3)
+
+ranAll.set(1)
+
+
 
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
@@ -48,12 +87,32 @@ class Planet():
         self.circle.y = self.y  
 
 
-planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+planetNames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
 #new planet
 def newplanet():
-        planet = Planet(random.choice(planets), random.randint(0, 1200), random.randint(0, 600), random.randint(50, 100), random.randint(0, 360), random.randint(100, 500))
-        return planet
+        if ranAll.get() == 1:
+            name = random.choice(planetNames)
+            direction = random.randint(0, 360)
+            velocity = random.randint(100,500)
+            x = random.randint(100, 1100)
+            y = random.randint(100, 500)
+            mass = random.randint(50, 100)
 
+        else:
+            name = nameEntry.get()
+            direction = int(directionEntry.get())
+            velocity = int(velocityEntry.get())
+            x = int(xcoordEntry.get())
+            y = int(ycoordEntry.get())
+            mass = int(radiusEntry.get())
+
+
+        planet = Planet(name, x, y, mass, direction, velocity) # sets planet attributes
+        objects.append(planet) # add the planet to the list of objects
+
+# new planet button
+generateButton = Button(root, text="Generate", command=newplanet)
+generateButton.grid(row=6, column=0)
 
 objects = [] # list of objects
 
@@ -85,16 +144,9 @@ while running: # main loop
     batch.draw() # draw the batch
 
     for planet in temp_object_list:
-            #planet.circle.delete() # delete the sprite
+            planet.circle.delete() # delete the sprite
             objects.remove(planet) # remove the planet from the list 
             print("planet removed")
-
-        
-    if len(objects) < numPlnaetslider.get(): # if the number of planets is less than the number of planets on the slider
-        objects.append(newplanet()) # add a new planet to the list
-        print(numPlnaetslider.get())
-
-    print("running")
         
     
 

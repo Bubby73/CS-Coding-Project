@@ -383,7 +383,7 @@ root.protocol("WM_DELETE_WINDOW", on_closing) # detect when the secondary window
 
  # main loop
 while running:
-    clock.tick()
+    dt = clock.tick()
     #show fps
     fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch=batch)
