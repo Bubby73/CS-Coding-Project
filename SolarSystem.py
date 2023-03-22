@@ -110,9 +110,9 @@ velocityMultiplierslider.grid(row=1, column=3)
 # set slider to 5
 velocityMultiplierslider.set(1)
 
-generateMultiplierlabel = Label(root, text="Generate Multiplier:")
+generateMultiplierlabel = Label(root, text="Generate Multiplier:") 
 generateMultiplierlabel.grid(row=2, column=3)
-generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)
+generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100) 
 generateMultiplierslider.grid(row=3, column=3)
 
 staticVar = IntVar()
