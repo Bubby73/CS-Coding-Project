@@ -18,78 +18,92 @@ planet_image.anchor_x = planet_image.width // 2 # set the anchor to the center o
 planet_image.anchor_y = planet_image.height // 2 
 batch = pyglet.graphics.Batch() # create a batch object
 
+objects = [] # list of objects
+planetNames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"] # list of planet names
 
 # setup tkinter interface
-nameLabel = Label(root, text="Object Name:")
+
+nameLabel = Label(root, text="Object Name:") # name label
 nameLabel.grid(row=0, column=0)
 
-nameEntry = Entry(root, width = 8, relief=FLAT)
+nameEntry = Entry(root, width = 8, relief=FLAT) # name entry
 nameEntry.grid(row=0, column=1)
 
 ranName = IntVar()
-nameCheckbox = Checkbutton(root, text="Randomise Name", variable=ranName)
+nameCheckbox = Checkbutton(root, text="Randomise Name", variable=ranName) # name checkbox
 nameCheckbox.grid(row=0, column=2)
 
-massLabel = Label(root, text="Mass:")
+massLabel = Label(root, text="Mass:") # mass label
 massLabel.grid(row=1, column=0)
 
-massEntry = Entry(root, width = 8, relief=FLAT)
+massEntry = Entry(root, width = 8, relief=FLAT) # mass entry
 massEntry.grid(row=1, column=1)
 
 ranMass = IntVar()
-massCheckbox = Checkbutton(root, text="Randomise Mass", variable=ranMass)
+massCheckbox = Checkbutton(root, text="Randomise Mass", variable=ranMass) # mass checkbox
 massCheckbox.grid(row=1, column=2)
 
-directionLabel = Label(root, text="Direction:")
+directionLabel = Label(root, text="Direction:") # direction label
 directionLabel.grid(row=2, column=0)
 
-directionEntry = Entry(root, width = 8, relief=FLAT)
+directionEntry = Entry(root, width = 8, relief=FLAT) # direction entry
 directionEntry.grid(row=2, column=1)
 
 ranDirection = IntVar()
-dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=ranDirection)
+dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=ranDirection) # direction checkbox
 dirCheckbox.grid(row=2, column=2)
 
-velocityLabel = Label(root, text="Velocity:")
+velocityLabel = Label(root, text="Velocity:") # velocity label
 velocityLabel.grid(row=3, column=0)
 
-velocityEntry = Entry(root, width = 8, relief=FLAT)
+velocityEntry = Entry(root, width = 8, relief=FLAT) # velocity entry
 velocityEntry.grid(row=3, column=1)
 
 ranVelocity = IntVar()
-velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=ranVelocity)
+velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=ranVelocity) # velocity checkbox
 velCheckbox.grid(row=3, column=2)
 
-xcoordLabel = Label(root, text="X Coordinate:")
+xcoordLabel = Label(root, text="X Coordinate:") # x coordinate label
 xcoordLabel.grid(row=4, column=0)
 
-xcoordEntry = Entry(root, width = 8, relief=FLAT)
+xcoordEntry = Entry(root, width = 8, relief=FLAT) # x coordinate entry
 xcoordEntry.grid(row=4, column=1)
 
 ranXcoord = IntVar()
-xCheckbox = Checkbutton(root, text="Randomise X coord", variable=ranXcoord)
+xCheckbox = Checkbutton(root, text="Randomise X coord", variable=ranXcoord) # x coordinate checkbox
 xCheckbox.grid(row=4, column=2)
 
-ycoordLabel = Label(root, text="Y Coordinate:")
+ycoordLabel = Label(root, text="Y Coordinate:") # y coordinate label
 ycoordLabel.grid(row=5, column=0)
 
-ycoordEntry = Entry(root, width = 8, relief=FLAT)
+ycoordEntry = Entry(root, width = 8, relief=FLAT) # y coordinate entry
 ycoordEntry.grid(row=5, column=1)
 
 ranYcoord = IntVar()
-yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=ranYcoord)
+yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=ranYcoord) # y coordinate checkbox
 yCheckbox.grid(row=5, column=2)
 
 ranAll = IntVar()
-allCheckbox = Checkbutton(root, text="Randomise All", variable=ranAll)
+allCheckbox = Checkbutton(root, text="Randomise All", variable=ranAll) # randomise all checkbox
 allCheckbox.grid(row=5, column=3)
 
 ranAll.set(1)
 
-generateMultiplierlabel = Label(root, text="Generate Multiplier:") 
+generateMultiplierlabel = Label(root, text="Generate Multiplier:") # generate multiplier label
 generateMultiplierlabel.grid(row=0, column=3)
-generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100) 
+generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)  # generate multiplier slider
 generateMultiplierslider.grid(row=1, column=3)
+
+planetDeletelabel = Label(root, text="Delete Planet:") # delete planet label
+planetDeletelabel.grid(row=6, column=2)
+planetDeleteEntry = Entry(root, width = 15, relief=FLAT) # delete planet entry
+planetDeleteEntry.grid(row=6, column=3)
+
+currentPlanetLabel = Label(root, text="Current Planets:") # current planets label
+currentPlanetLabel.grid(row=7, column=0)
+currentPlanets = "0" # current planets variable
+currentPlanetslabel = Label(root, text = currentPlanets) 
+currentPlanetslabel.grid(row=7, column=1)
 
 
 
@@ -116,17 +130,12 @@ class Planet():
         self.circle.y = self.y  
 
 
-planetNames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+# functions/procedures
+
 #new planet
 def newplanet():
         for i in range(generateMultiplierslider.get()):
             if ranAll.get() == 1: # if the randomise all checkbox is checked
-                name = random.choice(planetNames)
-                direction = random.randint(0, 360)
-                velocity = random.randint(100,500)
-                x = random.randint(100, 1100)
-                y = random.randint(100, 500)
-                mass = random.randint(50, 100)
                 # reset the colours of the entry boxes
                 nameEntry.config(bg = "white")
                 nameCheckbox.select() 
@@ -141,61 +150,80 @@ def newplanet():
                 ycoordEntry.config(bg = "white")
                 yCheckbox.select()
 
+            
+            if ranName.get() == 1:
+                name = random.choice(planetNames) # get a random name from the list
+                # if name already in use increase number on the end by one
+                def checkName(name):
+                    for planet in objects:
+                        if planet.name == name: # if name already in use
+                            if name[-1].isdigit(): # if last character is a number
+                                name = name[:-1] + str(int(name[-1]) + 1) # increase number on end by one
+                            else:
+                                name += "1" # if last character is not a number add a 1 to the end
+                            checkName(name) # check again
+                    return name # return name
+                name = checkName(name)
+
             else:
-                if ranName.get() == 1:
-                    name = random.choice(planetNames)
+                if nameEntry.get() == "": # if no name entered
+                    nameEntry.config(bg = "red")
+                    return
+            
                 else:
-                    if nameEntry.get() == "":
-                        nameEntry.config(bg = "red")
+                    name = nameEntry.get()
+                    for planet in objects: 
+                        if planet.name == name: 
+                            nameEntry.config(bg = "red")
+                            return
+                                
+                    nameEntry.config(bg = "white")
+            if ranMass.get() == 1:
+                mass = random.randint(50, 100)
+            else:
+                try:
+                    mass = float(massEntry.get())
+                    massEntry.config(bg = "white")
+                except:
+                    massEntry.config(bg = "red")
+            if ranDirection.get() == 1:
+                direction = random.randint(0, 360)
+            else:
+                try:
+                    direction = float(directionEntry.get())
+                    directionEntry.config(bg = "white")
+                except:
+                    directionEntry.config(bg = "red")
+            if ranVelocity.get() == 1:
+                velocity = random.randint(1, 5)
+            else:
+                try:
+                    velocity = float(velocityEntry.get())
+                    velocityEntry.config(bg = "white")
+                except:
+                    velocityEntry.config(bg = "red")
+            if ranXcoord.get() == 1:
+                x = random.randint(100, 1100)
+            else:
+                try:
+                    x = int(xcoordEntry.get())
+                    if x <= pWindowx and x >= 0:
+                        xcoordEntry.config(bg = "white")
                     else:
-                        name = nameEntry.get()
-                        nameEntry.config(bg = "white")
-                if ranMass.get() == 1:
-                    mass = random.randint(50, 100)
-                else:
-                    try:
-                        mass = float(massEntry.get())
-                        massEntry.config(bg = "white")
-                    except:
-                        massEntry.config(bg = "red")
-                if ranDirection.get() == 1:
-                    direction = random.randint(0, 360)
-                else:
-                    try:
-                        direction = float(directionEntry.get())
-                        directionEntry.config(bg = "white")
-                    except:
-                        directionEntry.config(bg = "red")
-                if ranVelocity.get() == 1:
-                    velocity = random.randint(1, 5)
-                else:
-                    try:
-                        velocity = float(velocityEntry.get())
-                        velocityEntry.config(bg = "white")
-                    except:
-                        velocityEntry.config(bg = "red")
-                if ranXcoord.get() == 1:
-                    x = random.randint(100, 1100)
-                else:
-                    try:
-                        x = int(xcoordEntry.get())
-                        if x <= pWindowx and x >= 0:
-                            xcoordEntry.config(bg = "white")
-                        else:
-                            xcoordEntry.config(bg = "red")
-                    except:
                         xcoordEntry.config(bg = "red")
-                if ranYcoord.get() == 1:
-                    y = random.randint(100, 500)
-                else:
-                    try:
-                        y = int(ycoordEntry.get())
-                        if y <= pWindowy and y >= 0:
-                            ycoordEntry.config(bg = "white")
-                        else:
-                            ycoordEntry.config(bg = "red")
-                    except:
+                except:
+                    xcoordEntry.config(bg = "red")
+            if ranYcoord.get() == 1:
+                y = random.randint(100, 500)
+            else:
+                try:
+                    y = int(ycoordEntry.get())
+                    if y <= pWindowy and y >= 0:
+                        ycoordEntry.config(bg = "white")
+                    else:
                         ycoordEntry.config(bg = "red")
+                except:
+                    ycoordEntry.config(bg = "red")
             
             planet = Planet(name, x, y, mass, direction, velocity) # sets planet attributes
             # update the entry boxes with the new values
@@ -213,11 +241,39 @@ def newplanet():
             ycoordEntry.insert(0, y)
             objects.append(planet) # add the planet to the list of objects
 
+# clear all procedure
+def clearAll():
+    for planet in objects: # cycle through all the planets
+        planet.circle.delete() # delete the sprite
+        planetName = planet.name # get the name of the planet
+        print(planetName + " deleted") 
+    objects.clear() # clear the list of objects
+    print("Cleared")
+
+# delete planet procedure
+def deletePlanet():
+    planetTodelete = planetDeleteEntry.get() # get the name of the planet to delete
+    for planet in objects: # cycle through all the planets
+        planetName = planet.name # get the name of the planet
+        if planetName.lower() == planetTodelete.lower(): # if the name of the planet matches the name of the planet to delete
+            objects.remove(planet) # remove the planet from the list of objects
+            planet.circle.delete() # delete the sprite
+            print(planetName + " deleted")
+            break # stop the loop
+
 # new planet button
 generateButton = Button(root, text="Generate", command=newplanet)
 generateButton.grid(row=6, column=0)
 
-objects = [] # list of objects
+# clear all button
+clearAllbutton = Button(root, text="Clear All", command=clearAll)
+clearAllbutton.grid(row=7, column=2)
+
+# delete planet button
+planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
+planetDeletebutton.grid(row=7, column=3)
+
+
 
 def on_closing():
     global running 
