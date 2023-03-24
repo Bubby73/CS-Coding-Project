@@ -90,9 +90,9 @@ allCheckbox.grid(row=5, column=3)
 ranAll.set(1)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:") # generate multiplier label
-generateMultiplierlabel.grid(row=0, column=3)
+generateMultiplierlabel.grid(row=2, column=3)
 generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)  # generate multiplier slider
-generateMultiplierslider.grid(row=1, column=3)
+generateMultiplierslider.grid(row=3, column=3)
 
 planetDeletelabel = Label(root, text="Delete Planet:") # delete planet label
 planetDeletelabel.grid(row=6, column=2)
@@ -101,9 +101,17 @@ planetDeleteEntry.grid(row=6, column=3)
 
 currentPlanetLabel = Label(root, text="Current Planets:") # current planets label
 currentPlanetLabel.grid(row=7, column=0)
-currentPlanets = "0" # current planets variable
+currentPlanets = "" # current planets variable
 currentPlanetslabel = Label(root, text = currentPlanets) 
-currentPlanetslabel.grid(row=7, column=1)
+currentPlanetslabel.grid(row=8, column=0)
+
+velocityMultiplierlabel = Label(root, text="Velocity Multiplier:") # velocity multiplier label
+velocityMultiplierlabel.grid(row=0, column=3)
+velocityMultiplierslider = Scale(root, from_=0, to=25, orient=HORIZONTAL, length=100)
+velocityMultiplierslider.grid(row=1, column=3)
+
+# set slider to 1 by default
+velocityMultiplierslider.set(1)
 
 
 
@@ -124,8 +132,8 @@ class Planet():
         self.circle.color = self.colour # set the colour of the sprite
     
     def update(self):
-        self.x += self.vx * dt 
-        self.y += self.vy * dt 
+        self.x += self.vx * dt * velocityMultiplierslider.get()
+        self.y += self.vy * dt * velocityMultiplierslider.get() 
         self.circle.x = self.x 
         self.circle.y = self.y  
 
@@ -240,6 +248,7 @@ def newplanet():
             ycoordEntry.delete(0, END)
             ycoordEntry.insert(0, y)
             objects.append(planet) # add the planet to the list of objects
+            updatePlanetlist()
 
 # clear all procedure
 def clearAll():
@@ -248,6 +257,7 @@ def clearAll():
         planetName = planet.name # get the name of the planet
         print(planetName + " deleted") 
     objects.clear() # clear the list of objects
+    updatePlanetlist()
     print("Cleared")
 
 # delete planet procedure
@@ -259,7 +269,19 @@ def deletePlanet():
             objects.remove(planet) # remove the planet from the list of objects
             planet.circle.delete() # delete the sprite
             print(planetName + " deleted")
+            updatePlanetlist()
             break # stop the loop
+
+def updatePlanetlist():
+    # add planets to current planets label in tkinter window
+    currentPlanets = ""
+    for planet in objects: 
+        currentPlanets += planet.name + "\n"
+    currentPlanetslabel.config(text = currentPlanets)
+
+    # increase window size when more planets being displayed  
+    screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects)) 
+    root.geometry(screen_resolution)
 
 # new planet button
 generateButton = Button(root, text="Generate", command=newplanet)
@@ -291,6 +313,8 @@ while running: # main loop
     window.dispatch_events() 
     window.flip()
     window.clear() # clear the window at the end of each frame
+    currentPlanetLabel.config(text = "Current Planets: " + str(len(objects)))
+
 
     temp_object_list = [] # reset the temporary object list at the end of each frame
     for planet in objects: # for each planet in the list
@@ -302,12 +326,12 @@ while running: # main loop
 
     batch.draw() # draw the batch
 
+
     for planet in temp_object_list:
             planet.circle.delete() # delete the sprite
             objects.remove(planet) # remove the planet from the list 
             print("planet removed")
         
-    
 
     root.update() # update the secondary window at the end of each frame
 

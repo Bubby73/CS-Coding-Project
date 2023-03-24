@@ -107,7 +107,7 @@ velocityMultiplierlabel.grid(row=0, column=3)
 velocityMultiplierslider = Scale(root, from_=-15, to=15, orient=HORIZONTAL, length=100)
 velocityMultiplierslider.grid(row=1, column=3)
 
-# set slider to 5
+# set slider to 1
 velocityMultiplierslider.set(1)
 
 generateMultiplierlabel = Label(root, text="Generate Multiplier:") 
@@ -323,12 +323,12 @@ def deletePlanet():
             objects.remove(planet)
             planet.circle.delete()
             print(planetName + " deleted")
-            currentPlanetslabel.config(text = currentPlanets)
+            #currentPlanetslabel.config(text = currentPlanets)
             break
 
 # clear all procedure
 def clearAll():
-    currentPlanetslabel.config(text = currentPlanets)
+    #currentPlanetslabel.config(text = currentPlanets)
     for planet in objects:
         planet.circle.delete()
         planetName = planet.name
