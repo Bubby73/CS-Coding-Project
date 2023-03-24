@@ -200,6 +200,10 @@ def newplanet():
                 try:
                     direction = float(directionEntry.get())
                     directionEntry.config(bg = "white")
+                    if direction > 360 or direction < 360: 
+                        direction = direction % 360 # direction mod 360
+                        directionEntry.delete(0, END)
+                        directionEntry.insert(0, direction) # insert new direction into entry box
                 except:
                     directionEntry.config(bg = "red")
             if ranVelocity.get() == 1:
