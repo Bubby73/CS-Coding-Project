@@ -17,6 +17,7 @@ planet_image = pyglet.image.load("planet.png") # load the image
 planet_image.anchor_x = planet_image.width // 2 # set the anchor to the center of the image
 planet_image.anchor_y = planet_image.height // 2 
 batch = pyglet.graphics.Batch() # create a batch object
+G = 6.67408 * 10**-11 # gravitational constant
 
 objects = [] # list of objects
 planetNames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"] # list of planet names
@@ -118,8 +119,8 @@ velocityMultiplierslider.set(1)
 class Planet():
     def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
-        self.radius = mass / 1000
-        self.mass = 4/3 * math.pi * mass**3 * 5.51 * 10**12 # working out the mass of the planet
+        self.radius = mass / 2000
+        self.mass = 4/3 * math.pi * mass**3 * 5.51 * 10**12 * 10000# working out the mass of the planet
         self.x = x
         self.y = y
         self.direction = direction
@@ -132,8 +133,21 @@ class Planet():
         self.circle.color = self.colour # set the colour of the sprite
     
     def update(self):
+        for planet in objects: # for every planet in the objects list
+            if planet != self: # if the planet is not the same as the current planet
+                dx = planet.x - self.x
+                dy = planet.y - self.y
+                distance = math.sqrt(dx**2 + dy**2) * 1000 # distance formula
+                print(distance)
+                if distance < planet.radius + self.radius: # if the planets collide
+                    distance = planet.radius + self.radius # set the distance to the radius of the planets
+                    # collision algorithm
+                F = G * self.mass * planet.mass / distance**2 # working out the force of gravity
+                self.vx += F * dx / distance / self.mass 
+                self.vy += F * dy / distance / self.mass 
+
         self.x += self.vx * dt * velocityMultiplierslider.get()
-        self.y += self.vy * dt * velocityMultiplierslider.get() 
+        self.y += self.vy * dt * velocityMultiplierslider.get()  
         self.circle.x = self.x 
         self.circle.y = self.y  
 
@@ -252,6 +266,7 @@ def newplanet():
             ycoordEntry.delete(0, END)
             ycoordEntry.insert(0, y)
             objects.append(planet) # add the planet to the list of objects
+            print(planet.mass)
             updatePlanetlist()
 
 # clear all procedure
@@ -267,6 +282,7 @@ def clearAll():
 # delete planet procedure
 def deletePlanet():
     planetTodelete = planetDeleteEntry.get() # get the name of the planet to delete
+    planetDeleteEntry.delete(0, END) # clear the entry box
     for planet in objects: # cycle through all the planets
         planetName = planet.name # get the name of the planet
         if planetName.lower() == planetTodelete.lower(): # if the name of the planet matches the name of the planet to delete
@@ -330,11 +346,12 @@ while running: # main loop
 
     batch.draw() # draw the batch
 
-
-    for planet in temp_object_list:
-            planet.circle.delete() # delete the sprite
-            objects.remove(planet) # remove the planet from the list 
-            print("planet removed")
+    if len(temp_object_list) > 0: # if there are any planets to remove
+        for planet in temp_object_list:
+                planet.circle.delete() # delete the sprite
+                objects.remove(planet) # remove the planet from the list 
+                updatePlanetlist()
+                print("planet removed")
         
 
     root.update() # update the secondary window at the end of each frame
