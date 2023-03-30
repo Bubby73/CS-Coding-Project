@@ -1,272 +1,222 @@
-# import libraries
-from tkinter import *
-import pyglet, math, random, csv # import libraries
-from pyglet import clock 
+import pyglet, math, random # import libraries
+from tkinter import * # import tkinter library
+from pyglet import clock # import clock from pyglet
+key = pyglet.window.key # import key constants
 
-# window setup
-pygletWindowsize = 1200, 600
+
+pWindowx, pWindowy = 1200, 600
+pygletWindowsize = pWindowx, pWindowy
 window = pyglet.window.Window(pygletWindowsize[0], pygletWindowsize[1], vsync = 0)
-window.set_caption("Main Window")
-key = pyglet.window.key
-objects = []
-root = Tk()
-root.title("Control Panel")
-xwidth, yheight = 400, 250
-screen_resolution = str(xwidth)+'x'+str(yheight)
-root.geometry(screen_resolution)
+window.set_caption("View Window") # set the window caption
+root = Tk() # create the secondary window
+root.title("Control Panel") # set the secondary window caption
+xwidth, yheight = 400, 250 # set the size of the secondary window
+screen_resolution = str(xwidth)+'x'+str(yheight) # set the screen resolution
+root.geometry(screen_resolution) # set the geometry of the secondary window
 planet_image = pyglet.image.load("planet.png") # load the image
 planet_image.anchor_x = planet_image.width // 2 # set the anchor to the center of the image
 planet_image.anchor_y = planet_image.height // 2 
-batch = pyglet.graphics.Batch()
-#G = 6.67408 * 10**-11
-G = 1
+batch = pyglet.graphics.Batch() # create a batch object
+G = 6.67408 * 10**-11 # gravitational constant
 
-running = True
-paused = False
+objects = [] # list of objects
+planetNames = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"] # list of planet names
 
 # setup tkinter interface
-nameLabel = Label(root, text="Object Name:")
+
+nameLabel = Label(root, text="Object Name:") # name label
 nameLabel.grid(row=0, column=0)
 
-nameEntry = Entry(root, width = 8, relief=FLAT)
+nameEntry = Entry(root, width = 8, relief=FLAT) # name entry
 nameEntry.grid(row=0, column=1)
 
 ranName = IntVar()
-nameCheckbox = Checkbutton(root, text="Randomise Name", variable=ranName)
+nameCheckbox = Checkbutton(root, text="Randomise Name", variable=ranName) # name checkbox
 nameCheckbox.grid(row=0, column=2)
 
-radiusLabel = Label(root, text="Radius:")
-radiusLabel.grid(row=1, column=0)
+massLabel = Label(root, text="Mass:") # mass label
+massLabel.grid(row=1, column=0)
 
-radiusEntry = Entry(root, width = 8, relief=FLAT)
-radiusEntry.grid(row=1, column=1)
+massEntry = Entry(root, width = 8, relief=FLAT) # mass entry
+massEntry.grid(row=1, column=1)
 
-ranRad = IntVar()
-radiusCheckbox = Checkbutton(root, text="Randomise Radius", variable=ranRad)
-radiusCheckbox.grid(row=1, column=2)
+ranMass = IntVar()
+massCheckbox = Checkbutton(root, text="Randomise Mass", variable=ranMass) # mass checkbox
+massCheckbox.grid(row=1, column=2)
 
-directionLabel = Label(root, text="Direction:")
+directionLabel = Label(root, text="Direction:") # direction label
 directionLabel.grid(row=2, column=0)
 
-directionEntry = Entry(root, width = 8, relief=FLAT)
+directionEntry = Entry(root, width = 8, relief=FLAT) # direction entry
 directionEntry.grid(row=2, column=1)
 
 ranDirection = IntVar()
-dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=ranDirection)
+dirCheckbox = Checkbutton(root, text="Randomise Direction", variable=ranDirection) # direction checkbox
 dirCheckbox.grid(row=2, column=2)
 
-velocityLabel = Label(root, text="Velocity:")
+velocityLabel = Label(root, text="Velocity:") # velocity label
 velocityLabel.grid(row=3, column=0)
 
-velocityEntry = Entry(root, width = 8, relief=FLAT)
+velocityEntry = Entry(root, width = 8, relief=FLAT) # velocity entry
 velocityEntry.grid(row=3, column=1)
 
 ranVelocity = IntVar()
-velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=ranVelocity)
+velCheckbox = Checkbutton(root, text="Randomise Velocity", variable=ranVelocity) # velocity checkbox
 velCheckbox.grid(row=3, column=2)
 
-xcoordLabel = Label(root, text="X Coordinate:")
+xcoordLabel = Label(root, text="X Coordinate:") # x coordinate label
 xcoordLabel.grid(row=4, column=0)
 
-xcoordEntry = Entry(root, width = 8, relief=FLAT)
+xcoordEntry = Entry(root, width = 8, relief=FLAT) # x coordinate entry
 xcoordEntry.grid(row=4, column=1)
 
 ranXcoord = IntVar()
-xCheckbox = Checkbutton(root, text="Randomise X coord", variable=ranXcoord)
+xCheckbox = Checkbutton(root, text="Randomise X coord", variable=ranXcoord) # x coordinate checkbox
 xCheckbox.grid(row=4, column=2)
 
-ycoordLabel = Label(root, text="Y Coordinate:")
+ycoordLabel = Label(root, text="Y Coordinate:") # y coordinate label
 ycoordLabel.grid(row=5, column=0)
 
-ycoordEntry = Entry(root, width = 8, relief=FLAT)
+ycoordEntry = Entry(root, width = 8, relief=FLAT) # y coordinate entry
 ycoordEntry.grid(row=5, column=1)
 
 ranYcoord = IntVar()
-yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=ranYcoord)
+yCheckbox = Checkbutton(root, text="Randomise Y coord", variable=ranYcoord) # y coordinate checkbox
 yCheckbox.grid(row=5, column=2)
 
 ranAll = IntVar()
-allCheckbox = Checkbutton(root, text="Randomise All", variable=ranAll)
+allCheckbox = Checkbutton(root, text="Randomise All", variable=ranAll) # randomise all checkbox
 allCheckbox.grid(row=5, column=3)
 
 ranAll.set(1)
 
-currentPlanetLabel = Label(root, text="Current Planets:")
-currentPlanetLabel.grid(row=7, column=0)
-currentPlanets = "0"
-currentPlanetslabel = Label(root, text = currentPlanets)
-currentPlanetslabel.grid(row=8, column=0)
-
-planetDeletelabel = Label(root, text="Delete Planet:")
-planetDeletelabel.grid(row=6, column=2)
-planetDeleteEntry = Entry(root, width = 15, relief=FLAT)
-planetDeleteEntry.grid(row=6, column=3)
-
-velocityMultiplierlabel = Label(root, text="Velocity Multiplier:")
-velocityMultiplierlabel.grid(row=0, column=3)
-velocityMultiplierslider = Scale(root, from_=-15, to=15, orient=HORIZONTAL, length=100)
-velocityMultiplierslider.grid(row=1, column=3)
-
-# set slider to 1
-velocityMultiplierslider.set(1)
-
-generateMultiplierlabel = Label(root, text="Generate Multiplier:") 
+generateMultiplierlabel = Label(root, text="Generate Multiplier:") # generate multiplier label
 generateMultiplierlabel.grid(row=2, column=3)
-generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100) 
+generateMultiplierslider = Scale(root, from_=1, to=10, orient=HORIZONTAL, length=100)  # generate multiplier slider
 generateMultiplierslider.grid(row=3, column=3)
 
-staticVar = IntVar()
-static = Checkbutton(root, text="Star", variable=staticVar)
-static.grid(row=4, column=3)
+planetDeletelabel = Label(root, text="Delete Planet:") # delete planet label
+planetDeletelabel.grid(row=6, column=2)
+planetDeleteEntry = Entry(root, width = 15, relief=FLAT) # delete planet entry
+planetDeleteEntry.grid(row=6, column=3)
 
-planetDensity = 50
+currentPlanetLabel = Label(root, text="Current Planets:") # current planets label
+currentPlanetLabel.grid(row=7, column=0)
+currentPlanets = "" # current planets variable
+currentPlanetslabel = Label(root, text = currentPlanets) 
+currentPlanetslabel.grid(row=8, column=0)
 
-scalar = 100
-# new planet class
+velocityMultiplierlabel = Label(root, text="Velocity Multiplier:") # velocity multiplier label
+velocityMultiplierlabel.grid(row=0, column=3)
+velocityMultiplierslider = Scale(root, from_=0, to=25, orient=HORIZONTAL, length=100)
+velocityMultiplierslider.grid(row=1, column=3)
+
+# set slider to 1 by default
+velocityMultiplierslider.set(1)
+
+
+
 class Planet():
-    def __init__(self, name, x, y, radius, direction, velocity, static):
-        global planetDensity
+    def __init__(self, name, x, y, mass, direction, velocity):
         self.name = name
-        self.radius = radius / scalar
-        self.mass = radius 
-        self.x = x 
-        self.y = y 
-        self.static = static
+        self.radius = mass / 2000
+        self.mass = 4/3 * math.pi * mass**3 * 5.51 * 10**12 * 10000# working out the mass of the planet
+        self.x = x
+        self.y = y
         self.direction = direction
-        self.velocity = velocity 
-        self.vx = math.sin(math.radians(self.direction)) * self.velocity # working out x and y velocities in relation to the direction
-        self.vy = math.cos(math.radians(self.direction))* self.velocity
+        self.velocity = velocity
+        self.vx = math.sin(math.radians(self.direction)) * self.velocity
+        self.vy = math.cos(math.radians(self.direction)) * self.velocity
         self.colour = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
-        self.circle.scale = self.radius
-        self.circle.color = self.colour
-
-
-    # updates the position of the planet
+        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch) # create the sprite
+        self.circle.scale = self.radius # set the radius of the sprite
+        self.circle.color = self.colour # set the colour of the sprite
+    
     def update(self):
-        if self.static == False:
-            # give planets gravity
-            for planet in objects:
-                    if planet != self and planet.static == False:
-                        dx = planet.x - self.x 
-                        dy = planet.y - self.y
-                        distance = math.sqrt(dx ** 2 + dy ** 2)
-                        if (distance / 100) < planet.radius + self.radius:
-                            if self.radius > planet.radius: # delete the smaller planet
-                                objects.remove(planet)
-                                planet.circle.delete()
-                                print("Planet " + planet.name + " has been destroyed by " + self.name)
-                                # add attributes
-                                self.vx += planet.vx
-                                self.vy += planet.vy
-                                self.mass += planet.mass
-                                self.radius += planet.radius / 2
-                                self.circle.scale = self.radius # update circle
-                                self.velocity = math.sqrt(self.vx ** 2 + self.vy ** 2)
-                                self.direction = math.degrees(math.atan2(self.vx, self.vy))
-                                print(self.radius)
-                                
-                            else:
-                                objects.remove(self)
-                                self.circle.delete()
-                                print("Planet " + self.name + " has been destroyed by " + planet.name)
-                                planet.vx += self.vx # add attributes 
-                                planet.vy += self.vy
-                                planet.mass += self.mass
-                                planet.radius += self.radius / 2
-                                planet.circle.scale = planet.radius # update circle
-                                planet.velocity = math.sqrt(planet.vx ** 2 + planet.vy ** 2) # make velocity added proportional 2 mass
-                                planet.direction = math.degrees(math.atan2(planet.vx, planet.vy))
-                                return
-                                
-                        else:
-                            force = (G * self.mass * planet.mass) / (distance ** 2)
-                            ax = dx / distance * force
-                            ay = dy / distance * force
-                            self.vx += ax / 5
-                            self.vy += ay / 5 
-             
-                            
-            # update position
-            self.x += self.vx * (velocityMultiplierslider.get() / 100) 
-            self.y += self.vy * (velocityMultiplierslider.get() / 100) 
-            self.circle.x = self.x
-            self.circle.y = self.y
+        for planet in objects: # for every planet in the objects list
+            if planet != self: # if the planet is not the same as the current planet
+                dx = planet.x - self.x
+                dy = planet.y - self.y
+                distance = math.sqrt(dx**2 + dy**2) * 1000 # distance formula
+                if distance < planet.radius + self.radius: # if the planets collide
+                    distance = planet.radius + self.radius # set the distance to the radius of the planets
+                    # collision algorithm
+                F = G * self.mass * planet.mass / distance**2 # working out the force of gravity
+                self.vx += F * dx / distance / self.mass 
+                self.vy += F * dy / distance / self.mass 
 
-class staticPlanet():
-    def __init__(self, x, y, radius, static):
-        self.name = "Sun"
-        self.static = static
-        self.radius = radius / 100
-        self.mass = radius * planetDensity
-        self.x = x 
-        self.y = y 
-        self.static = static
-        self.colour = (255, 255, 0)
-        self.circle = pyglet.sprite.Sprite(planet_image, x=self.x, y=self.y, batch=batch)
-        self.circle.scale = self.radius
-        self.circle.color = self.colour
-        
+        self.x += self.vx * dt * velocityMultiplierslider.get()
+        self.y += self.vy * dt * velocityMultiplierslider.get()  
+        self.circle.x = self.x 
+        self.circle.y = self.y  
 
 
-# random planet names      
-planetNamelist = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Moon"]
+# functions/procedures
 
-# new planet
+#new planet
 def newplanet():
-    if staticVar.get() == 1:
-        static = True
-    else:
-        static = False
-    for i in range(generateMultiplierslider.get()):
-        if ranAll.get() == 1:
-            name = random.choice(planetNamelist)
-            direction = random.randint(0, 360)
-            velocity = random.randint(1,5)
-            x = random.randint(100, 1100)
-            y = random.randint(100, 500)
-            if static == True:
-                radius = random.randint(6, 12)
-            else:
-                radius = random.randint(1, 5)
-            nameEntry.config(bg = "white")
-            nameCheckbox.select()
-            radiusEntry.config(bg = "white")
-            radiusCheckbox.select()
-            directionEntry.config(bg = "white")
-            dirCheckbox.select()
-            velocityEntry.config(bg = "white")
-            velCheckbox.select()
-            xcoordEntry.config(bg = "white")
-            xCheckbox.select()
-            ycoordEntry.config(bg = "white")
-            yCheckbox.select()
-        else:
+        for i in range(generateMultiplierslider.get()):
+            if ranAll.get() == 1: # if the randomise all checkbox is checked
+                # reset the colours of the entry boxes
+                nameEntry.config(bg = "white")
+                nameCheckbox.select() 
+                massEntry.config(bg = "white")
+                massCheckbox.select()
+                directionEntry.config(bg = "white")
+                dirCheckbox.select()
+                velocityEntry.config(bg = "white")
+                velCheckbox.select()
+                xcoordEntry.config(bg = "white")
+                xCheckbox.select()
+                ycoordEntry.config(bg = "white")
+                yCheckbox.select()
+
+            
             if ranName.get() == 1:
-                name = random.choice(planetNamelist)
+                name = random.choice(planetNames) # get a random name from the list
+                # if name already in use increase number on the end by one
+                def checkName(name):
+                    for planet in objects:
+                        if planet.name == name: # if name already in use
+                            if name[-1].isdigit(): # if last character is a number
+                                name = name[:-1] + str(int(name[-1]) + 1) # increase number on end by one
+                            else:
+                                name += "1" # if last character is not a number add a 1 to the end
+                            checkName(name) # check again
+                    return name # return name
+                name = checkName(name)
+
             else:
-                if nameEntry.get() == "":
+                if nameEntry.get() == "": # if no name entered
                     nameEntry.config(bg = "red")
+                    return
+            
                 else:
                     name = nameEntry.get()
+                    for planet in objects: 
+                        if planet.name == name: 
+                            nameEntry.config(bg = "red")
+                            return
+                                
                     nameEntry.config(bg = "white")
-            if ranRad.get() == 1:
-                if static == True:
-                    radius = random.randint(6, 12)
-                else:
-                    radius = random.randint(1, 5)
+            if ranMass.get() == 1:
+                mass = random.randint(20, 70)
             else:
                 try:
-                    radius = float(radiusEntry.get())
-                    radiusEntry.config(bg = "white")
+                    mass = float(massEntry.get())
+                    massEntry.config(bg = "white")
                 except:
-                    radiusEntry.config(bg = "red")
+                    massEntry.config(bg = "red")
             if ranDirection.get() == 1:
                 direction = random.randint(0, 360)
             else:
                 try:
                     direction = float(directionEntry.get())
                     directionEntry.config(bg = "white")
+                    if direction > 360 or direction < 360: 
+                        direction = direction % 360 # direction mod 360
+                        directionEntry.delete(0, END)
+                        directionEntry.insert(0, direction) # insert new direction into entry box
                 except:
                     directionEntry.config(bg = "red")
             if ranVelocity.get() == 1:
@@ -282,7 +232,10 @@ def newplanet():
             else:
                 try:
                     x = int(xcoordEntry.get())
-                    xcoordEntry.config(bg = "white")
+                    if x <= pWindowx and x >= 0:
+                        xcoordEntry.config(bg = "white")
+                    else:
+                        xcoordEntry.config(bg = "red")
                 except:
                     xcoordEntry.config(bg = "red")
             if ranYcoord.get() == 1:
@@ -290,167 +243,122 @@ def newplanet():
             else:
                 try:
                     y = int(ycoordEntry.get())
-                    ycoordEntry.config(bg = "white")
+                    if y <= pWindowy and y >= 0:
+                        ycoordEntry.config(bg = "white")
+                    else:
+                        ycoordEntry.config(bg = "red")
                 except:
                     ycoordEntry.config(bg = "red")
-        if static == True:
-            planet = staticPlanet(x, y, radius, static)
-            direction = ""
-            velocity = ""
-        else:
-            planet = Planet(name, x, y, radius, direction, velocity, static) # sets planet attributes
-        nameEntry.delete(0, END)
-        nameEntry.insert(0, name)
-        radiusEntry.delete(0, END)
-        radiusEntry.insert(0, radius)
-        directionEntry.delete(0, END)
-        directionEntry.insert(0, direction)
-        velocityEntry.delete(0, END)
-        velocityEntry.insert(0, velocity)
-        xcoordEntry.delete(0, END)
-        xcoordEntry.insert(0, x)
-        ycoordEntry.delete(0, END)
-        ycoordEntry.insert(0, y)
-        objects.append(planet)
-        
-
-# delete planet
-def deletePlanet():
-    planetTodelete = planetDeleteEntry.get()
-    for planet in objects:
-        planetName = planet.name
-        if planetName.lower() == planetTodelete.lower():
-            objects.remove(planet)
-            planet.circle.delete()
-            print(planetName + " deleted")
-            #currentPlanetslabel.config(text = currentPlanets)
-            break
+            
+            planet = Planet(name, x, y, mass, direction, velocity) # sets planet attributes
+            # update the entry boxes with the new values
+            nameEntry.delete(0, END)
+            nameEntry.insert(0, name)
+            massEntry.delete(0, END)
+            massEntry.insert(0, mass)
+            directionEntry.delete(0, END)
+            directionEntry.insert(0, direction)
+            velocityEntry.delete(0, END)
+            velocityEntry.insert(0, velocity)
+            xcoordEntry.delete(0, END)
+            xcoordEntry.insert(0, x)
+            ycoordEntry.delete(0, END)
+            ycoordEntry.insert(0, y)
+            objects.append(planet) # add the planet to the list of objects
+            updatePlanetlist()
 
 # clear all procedure
 def clearAll():
-    #currentPlanetslabel.config(text = currentPlanets)
-    for planet in objects:
-        planet.circle.delete()
-        planetName = planet.name
+    for planet in objects: # cycle through all the planets
+        planet.circle.delete() # delete the sprite
+        planetName = planet.name # get the name of the planet
         print(planetName + " deleted") 
-    objects.clear()
-    print("cleared")
-    
+    objects.clear() # clear the list of objects
+    updatePlanetlist()
+    print("Cleared")
 
-# pause procedure
-def pause():
-    global paused
-    paused = True
-    pauseButton.config(text="Resume")
-    pauseButton.config(command=resume)
-    window.flip()
-    print("Paused")
+# delete planet procedure
+def deletePlanet():
+    planetTodelete = planetDeleteEntry.get() # get the name of the planet to delete
+    planetDeleteEntry.delete(0, END) # clear the entry box
+    for planet in objects: # cycle through all the planets
+        planetName = planet.name # get the name of the planet
+        if planetName.lower() == planetTodelete.lower(): # if the name of the planet matches the name of the planet to delete
+            objects.remove(planet) # remove the planet from the list of objects
+            planet.circle.delete() # delete the sprite
+            print(planetName + " deleted")
+            updatePlanetlist()
+            break # stop the loop
 
-# resume procedure
-def resume():
-    global paused
-    paused = False
-    pauseButton.config(text="Pause")
-    pauseButton.config(command=pause)
-    window.flip()
-    print("Resumed")
+def updatePlanetlist():
+    # add planets to current planets label in tkinter window
+    currentPlanets = ""
+    for planet in objects: 
+        currentPlanets += planet.name + "\n"
+    currentPlanetslabel.config(text = currentPlanets)
 
-# all buttons
-
-# pause button
-pauseButton = Button(root, text="Pause", command=pause) # pause button
-pauseButton.grid(row=6, column=1)
+    # increase window size when more planets being displayed  
+    screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects)) 
+    root.geometry(screen_resolution)
 
 # new planet button
 generateButton = Button(root, text="Generate", command=newplanet)
 generateButton.grid(row=6, column=0)
 
-# delete planet button
-planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
-planetDeletebutton.grid(row=7, column=3)
-
 # clear all button
 clearAllbutton = Button(root, text="Clear All", command=clearAll)
 clearAllbutton.grid(row=7, column=2)
 
+# delete planet button
+planetDeletebutton = Button(root, text="Delete Planet", command=deletePlanet)
+planetDeletebutton.grid(row=7, column=3)
 
-pausedText = ""
+
 
 def on_closing():
-    global running
-    running = False
+    global running 
+    running = False 
 root.protocol("WM_DELETE_WINDOW", on_closing) # detect when the secondary window is closed
 
- # main loop
-while running:
-    dt = clock.tick()
+
+running = True
+while running: # main loop 
     #show fps
+    dt = clock.tick() # get the time since the last frame
     fpsLabel = pyglet.text.Label("FPS: " + str(round(clock.get_fps(), 1)), font_name='Times New Roman', font_size=16, x = 50, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255)).draw()
     exitLabel = pyglet.text.Label("Press ESC to exit", font_name='Times New Roman', font_size=12, x=1130, y=590, anchor_x='center', anchor_y='center', color=(255,255,255, 255), batch=batch)
     window.switch_to()
-    window.dispatch_events()
+    window.dispatch_events() 
+    window.flip()
+    window.clear() # clear the window at the end of each frame
     currentPlanetLabel.config(text = "Current Planets: " + str(len(objects)))
-    if not paused:
-        window.flip()
-        window.clear()
-        temp_object_list = []
-        for planet in objects: # updates the position of each planet
-            if planet.static == False:
-                if planet.x > pygletWindowsize[0] or planet.x < 0 or planet.y > pygletWindowsize[1] or planet.y < 0: # if planet off screen, delete
-                    temp_object_list.append(planet)
-                    
 
-                else:
-                    planet.update()
 
-        batch.draw()
-        # add planets to current planets label in tkinter window
-        currentPlanets = ""
-        for planet in objects:
-            currentPlanets += planet.name + "\n"
-        currentPlanetslabel.config(text = currentPlanets)
-                    
+    temp_object_list = [] # reset the temporary object list at the end of each frame
+    for planet in objects: # for each planet in the list
+        if planet.x > pygletWindowsize[0] or planet.x < 0 or planet.y > pygletWindowsize[1] or planet.y < 0: # if the planet goes off the screen
+            temp_object_list.append(planet)
+
+        else:
+             planet.update()
+
+    batch.draw() # draw the batch
+
+    if len(temp_object_list) > 0: # if there are any planets to remove
         for planet in temp_object_list:
-            objects.remove(planet)
-            planet.circle.delete()
-            print(planet.name + " left the screen and was deleted") # delete planet if off screen
+                planet.circle.delete() # delete the sprite
+                objects.remove(planet) # remove the planet from the list 
+                updatePlanetlist()
+                print("planet removed")
+        
 
-        # add exit label
-    else:
-        currentPlanets = ""
-        for planet in objects:
-            currentPlanets += planet.name + "\n"
-        currentPlanetslabel.config(text = currentPlanets)
-                
-    # increase window size when more planets being displayed  
-    screen_resolution = str(xwidth)+'x'+str(yheight + 15*len(objects))
-    root.geometry(screen_resolution)
+    root.update() # update the secondary window at the end of each frame
 
-    root.update()
-
-    # detect if a key is pressed
-    @window.event()
+    @window.event() # event handler
     def on_key_press(symbol, modifiers):
         global running
-        global paused
         
-        if symbol == key.ESCAPE:
-            running = False
-            window.close()
-            root.destroy()
-                
-        if symbol == key.P and paused == False:
-            pause()
-            window.flip()
-            # temporarily set symbol to not P to prevent infinite loop
-            symbol = None
-
-        if symbol == key.P and paused == True:
-            resume()
-            window.flip()
-            symbol = None
-
-
-
-# make exe file
-# pyinstaller --onefile -w SolarSystem.py    
+       
+        if symbol == key.ESCAPE: # checks if the key pressed was escape
+            running = False # stop the main loop
+            window.close() # close the window
